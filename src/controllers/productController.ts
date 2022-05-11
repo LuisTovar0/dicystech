@@ -15,7 +15,7 @@ export default (app: Router) => {
 
   app.use('/product', route);
 
-  const service = Container.get(config.services.product.name) as IProductService;
+  const service = Container.get(config.deps.services.product.name) as IProductService;
 
   route.get('/byid/:id',
     celebrate({

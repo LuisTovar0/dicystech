@@ -7,7 +7,7 @@ import ILdapService from "../services/iServices/iLdapService";
 const route = Router();
 export default (app: Router) => {
   app.use('/debug', route);
-  const ldapService = Container.get(config.services.ldap.name) as ILdapService;
+  const ldapService = Container.get(config.deps.services.ldap.name) as ILdapService;
 
   route.get('', async (req, res, next) => {
     return await StaticController.simpleController(res, next,
