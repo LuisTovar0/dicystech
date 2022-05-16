@@ -1,5 +1,6 @@
 import {Container} from 'typedi';
 import Logger from './logger';
+import config from "../../../config";
 
 export interface InjectablesAndSchemas {
   schemas: NamePathMap,
@@ -17,8 +18,9 @@ export interface NamePath {
   path: string
 }
 
-export default (depNamesPaths: InjectablesAndSchemas) => {
+export default () => {
   try {
+    const depNamesPaths = <InjectablesAndSchemas>config.deps;
     Container.set('logger', Logger);
 
     /**

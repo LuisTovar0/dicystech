@@ -1,9 +1,12 @@
+import {SearchOptions} from 'ldapjs';
+import {Observable} from "rxjs";
+
 export default interface ILdapService {
-  ping(): Promise<string>;
+  add(entry: Object): void;
 
-  ldapadd(): void;
+  delete(): void;
 
-  ldapdelete(): void;
+  modify(): void;
 
-  ldapmodify(): void;
+  search(base: string, options: SearchOptions): Observable<Object>;
 }

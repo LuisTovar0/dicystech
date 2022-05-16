@@ -4,11 +4,8 @@ import dotenv from 'dotenv';
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 if (!dotenv.config()) throw new Error("⚠️  Couldn't find .env file  ⚠️");
-["LDAP_CONTAINER_NAME", "LDAP_ADMIN_PASSWORD", "LDAP_URLS"].forEach((env) => {
-  if (!process.env[env]) throw new Error(`The "${env}" environment variable was not defined.`);
-});
-
-if (!process.env.LDAP_URLS) throw Error(`Unreachable code`);
+if (!process.env.LDAP_CONTAINER_NAME || !process.env.LDAP_ADMIN_PASSWORD || !process.env.LDAP_URLS)
+  throw Error(`There is one or more undefined environment variables.`);
 
 export default {
   port: process.env.PORT || 3000,
@@ -17,8 +14,11 @@ export default {
 
   api: {prefix: '/api'},
 
-  ldapContainerName: process.env.LDAP_CONTAINER_NAME,
-  ldapUrls: process.env.LDAP_URLS.split(','),
+  ldap: {
+    containerName: process.env.LDAP_CONTAINER_NAME,
+    adminPwd: process.env.LDAP_ADMIN_PASSWORD,
+    urls: process.env.LDAP_URLS.split(','),
+  },
 
   deps: {
     repos: {

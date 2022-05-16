@@ -12,9 +12,13 @@ export default (app: Router) => {
   route.get('', async (req, res, next) => {
     return await StaticController.simpleController(res, next,
       async () => {
-        const ret = await ldapService.ping();
-        console.log(ret);
-        return ret;
+        let a;
+        const o = ldapService.search('dc=example,dc=org', {});
+        console.log(o);
+        o.subscribe({
+          next: (r) => a = r
+        });
+        return a;
       }, StaticController.ok);
   });
 }
