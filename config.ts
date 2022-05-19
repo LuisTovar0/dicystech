@@ -4,19 +4,16 @@ import dotenv from 'dotenv';
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 if (!dotenv.config()) throw new Error("⚠️  Couldn't find .env file  ⚠️");
-if (!process.env.LDAP_CONTAINER_NAME || !process.env.LDAP_ADMIN_PASSWORD || !process.env.LDAP_URLS)
+if (!process.env.LDAP_ADMIN_PASSWORD || !process.env.LDAP_URLS)
   throw Error(`There is one or more undefined environment variables.`);
 
 export default {
   port: process.env.PORT || 3000,
 
-  databaseURL: process.env.MONGODB_URI || "mongodb://localhost:27017/test",
-
   api: {prefix: '/api'},
 
   ldap: {
-    containerName: process.env.LDAP_CONTAINER_NAME,
-    adminPwd: process.env.LDAP_ADMIN_PASSWORD,
+    adminPwd: process.env.LDAP_ADMIN_PASSWORD.trim(),
     urls: process.env.LDAP_URLS.split(','),
   },
 

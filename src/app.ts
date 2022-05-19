@@ -5,6 +5,7 @@ import config from '../config';
 import Logger from './core/loaders/logger';
 
 async function startServer() {
+  Logger.info(`🤙 Bootin' up`);
   const app = express();
 
   await require('./core/loaders').default(app);
