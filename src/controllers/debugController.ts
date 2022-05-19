@@ -10,15 +10,12 @@ export default (app: Router) => {
   const ldapService = Container.get(config.deps.services.ldap.name) as ILdapService;
 
   route.get('', async (req, res, next) => {
-    return await StaticController.simpleController(res, next,
-      async () => {
-        let a;
-        const o = ldapService.search('dc=example,dc=org', {});
-        console.log(o);
-        o.subscribe({
-          next: (r) => a = r
-        });
-        return a;
-      }, StaticController.ok);
+    ldapService.search('dc=example,dc=org', {}, a => {
+      if (a instanceof Error) {
+        StaticController.badRequest(res, a.message);
+      } else {
+        StaticController.ok(res, a);
+      }
+    });
   });
 }

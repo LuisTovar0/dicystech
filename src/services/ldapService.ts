@@ -1,6 +1,5 @@
 import {Service} from "typedi";
 import {Client, createClient, SearchOptions} from "ldapjs";
-import {Observable} from "rxjs";
 
 import config from "../../config";
 import logger from "../core/loaders/logger";
@@ -13,33 +12,19 @@ export default class LdapService implements ILdapService {
 
   private readonly sleep = (ms: number) => new Promise(resolve => {
     logger.info(`Waiting ${~~ms / 1000}s\n`);
-    // let loading = (function() {
-    //   let P = ["\\", "|", "/", "-"];
-    //   let x = 0;
-    //   return setInterval(function() {
-    //     console.log("\r" + P[x++]);
-    //     x &= 3;
-    //   }, 250);
-    // })();
     setTimeout(resolve, ms);
-    // clearInterval(loading);
   });
   private readonly nextTry = 10000;
 
   tryBind() {
-    logger.info(`Attempting to bind to LDAP server (password ${config.ldap.adminPwd})`);
+    logger.info(`🤞 Attempting to bind to LDAP server (password ${config.ldap.adminPwd})`);
     this.client.bind(`cn=admin,dc=example,dc=org`, config.ldap.adminPwd, async e => {
       if (e as Error) {
         logger.error(`Coultn't bind! ${e}`);
         await this.sleep(this.nextTry);
         this.tryBind();
       } else {
-        logger.info('Binded to LDAP!');
-        this.search('dc=example,dc=org', {}).subscribe({
-          next: (r) => {
-            console.log(r);
-          }
-        });
+        logger.info('🌀 Binded to LDAP!');
       }
     });
   }
@@ -96,31 +81,18 @@ export default class LdapService implements ILdapService {
   modify() {
   }
 
-  search(base: string, options: SearchOptions) {
-    return new Observable<Object>(o => {
-      this.client.search(base, options, (err, res) => {
-        if (err) {
-          o.next(err);
-          return;
-        }
+  search(base: string, options: SearchOptions, callback: (content: Object | Error) => void) {
+    this.client.search(base, options, (err, res) => {
+      if (err) {
+        callback(err);
+        return;
+      }
 
-        res.on('searchRequest', (searchRequest) => {
-          console.log('searchRequest: ', searchRequest.messageID);
-        });
-        res.on('searchEntry', (entry) => {
-          console.log('entry: ' + JSON.stringify(entry.object));
-        });
-        res.on('searchReference', (referral) => {
-          console.log('referral: ' + referral.uris.join());
-        });
-        res.on('error', (err) => {
-          console.error('error: ' + err.message);
-        });
-        res.on('end', (result) => {
-          console.log('status: ' + result?.status);
-        });
-        o.next({hello: 'world'});
-      });
+      res.on('searchRequest', searchRequest => console.log('searchRequest: ', searchRequest.messageID));
+      res.on('searchEntry', entry => callback(entry.object));
+      res.on('searchReference', referral => console.log('referral: ' + referral.uris.join()));
+      res.on('error', err => callback(err));
+      res.on('end', result => console.log('status: ' + result?.status));
     });
   }
 

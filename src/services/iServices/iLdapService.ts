@@ -1,5 +1,4 @@
 import {SearchOptions} from 'ldapjs';
-import {Observable} from "rxjs";
 
 export default interface ILdapService {
   add(entry: Object): void;
@@ -8,5 +7,5 @@ export default interface ILdapService {
 
   modify(): void;
 
-  search(base: string, options: SearchOptions): Observable<Object>;
+  search(base: string, options: SearchOptions, callback: (content: Object | Error) => void): void;
 }
