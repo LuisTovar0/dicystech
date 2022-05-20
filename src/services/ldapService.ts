@@ -4,32 +4,35 @@ import {Client, createClient, SearchOptions} from "ldapjs";
 import config from "../../config";
 import logger from "../core/loaders/logger";
 import ILdapService from "./iServices/iLdapService";
+import ResultCallback from "../dto/iNoIdDto/ResultCallback";
+import {sleep} from "./utils";
 
 @Service()
 export default class LdapService implements ILdapService {
 
   private client: Client;
+  private ready = false;
 
-  private readonly sleep = (ms: number) => new Promise(resolve => {
-    logger.info(`Waiting ${~~ms / 1000}s\n`);
-    setTimeout(resolve, ms);
-  });
   private readonly nextTry = 10000;
 
-  tryBind() {
-    logger.info(`🤞 Attempting to bind to LDAP server (password ${config.ldap.adminPwd})`);
-    this.client.bind(`cn=admin,dc=example,dc=org`, config.ldap.adminPwd, async e => {
+  //#region connect and bind to LDAP server
+  private tryBind() {
+    logger.info(`🤞 Attempting to bind to LDAP server`);
+    let bindDN = 'cn=admin,dc=' + config.ldap.orgDomain.split('.').reduce((prev, curr) => `${prev},dc=${curr}`);
+    this.client.bind(bindDN, config.ldap.adminPwd, async e => {
       if (e as Error) {
         logger.error(`Coultn't bind! ${e}`);
-        await this.sleep(this.nextTry);
+        await sleep(this.nextTry);
         this.tryBind();
       } else {
         logger.info('🌀 Binded to LDAP!');
+
+        this.ready = true;
       }
     });
   }
 
-  tryConnect() {
+  private tryConnect() {
     const url: string[] = [];
     config.ldap.urls.forEach(host => url.push(`ldap://${host}`));
     this.client = createClient({url});
@@ -37,17 +40,8 @@ export default class LdapService implements ILdapService {
     ['error', 'connectError', 'connectTimeout', 'connectRefused'].forEach(errEvent => {
       this.client.on(errEvent, async err => {
         logger.error(`🔥 LDAP client ${errEvent} ${err.message}`);
-        await this.sleep(this.nextTry);
+        await sleep(this.nextTry);
         this.tryBind();
-
-        // const entry = {
-        //   cn: 'foo',
-        //   sn: 'bar',
-        //   email: ['foo@bar.com', 'foo1@bar.com'],
-        //   objectclass: 'fooPerson'
-        // };
-        // this.add(entry);
-
       });
     });
 
@@ -57,6 +51,8 @@ export default class LdapService implements ILdapService {
     });
   }
 
+  //#endregion
+
   constructor() {
     const url: string[] = [];
     config.ldap.urls.forEach(u => url.push(`ldap://${u}`));
@@ -65,23 +61,38 @@ export default class LdapService implements ILdapService {
     this.tryConnect();
   }
 
-  add(entry: any) {
-    this.client.add('cn=foo, o=example', entry, err => {
-      if (err) {
-        logger.error('Error adding entry to LDAP server.\n');
-        throw err;
-      }
-      logger.info('Added entry at LDAP');
+  private middleware(): void {
+    if (!this.isReady())
+      throw new Error(`The back-end hasn't connected to the LDAP server yet.`);
+  }
+
+  isReady() {
+    return this.ready;
+  }
+
+  async waitUntilReady(): Promise<void> {
+    while (!this.isReady()) await sleep(10);
+  }
+
+  add(entry: any, cb?: ResultCallback) {
+    this.middleware();
+    this.client.add('cn=foo, o=ISEP', entry, err => {
+      if (cb) err ?
+        cb(err) :
+        cb('Added entry at LDAP');
     });
   }
 
   delete() {
+    this.middleware();
   }
 
   modify() {
+    this.middleware();
   }
 
-  search(base: string, options: SearchOptions, callback: (content: Object | Error) => void) {
+  search(base: string, options: SearchOptions, callback: ResultCallback) {
+    this.middleware();
     this.client.search(base, options, (err, res) => {
       if (err) {
         callback(err);
