@@ -4,13 +4,12 @@ FROM node:16
 
 WORKDIR /app
 
-COPY package.json ./
-RUN npm install
+COPY package*.json ./
+RUN npm install #--production
 RUN npm audit fix
 COPY . ./
 
-ENV LDAP_ADMIN_PASSWORD="admin"
-ENV LDAP_URLS="localhost:389"
+ENV ENV="production"
 EXPOSE 3000
 
 CMD ["npm","start"]

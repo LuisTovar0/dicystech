@@ -9,7 +9,7 @@ export default (app: Router) => {
   app.use('/debug', route);
   const ldapService = Container.get(config.deps.services.ldap.name) as ILdapService;
 
-  route.get('', async (req, res, next) => {
+  route.post('/search', async (req, res) => {
 
     ldapService.search('dc=isep,dc=ipp,dc=pt', {}, searchRes => {
       if (searchRes instanceof Error) {
@@ -18,5 +18,14 @@ export default (app: Router) => {
         StaticController.ok(res, searchRes);
       }
     });
+  });
+
+  route.post('/add', async (req, res) => {
+    ldapService.add({
+      cn: 'foo',
+      sn: 'bar',
+      email: 'foo@bar.com',
+      objectclass: 'fooPerson'
+    }, (r: any) => StaticController.ok(res, r));
   });
 }

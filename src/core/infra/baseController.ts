@@ -52,13 +52,13 @@ export class BaseController {
     return StaticController.notFound(this.res, message);
   }
 
-  public notImplemented() {
-    return this.response(501, 'TODO');
-  }
-
-  public fail(error: Error | string) {
+  public serverError(error: Error | string) {
     Logger.error(error);
     return this.response(500, error.toString());
+  }
+
+  public notImplemented() {
+    return this.response(501, 'TODO');
   }
 }
 
@@ -79,7 +79,8 @@ export class StaticController {
       return StaticController.notFound(res, e.message);
     if (e instanceof ValidationError)
       return StaticController.badRequest(res, e.message);
-    return next(e);
+    return StaticController.serverError(res, e);
+    // return next(e);
   }
 
   public static response<T>(res: Response, code: number, content: T | string) {
@@ -103,6 +104,10 @@ export class StaticController {
 
   public static notFound(res: Response, message?: string) {
     return StaticController.response(res, 404, message || 'Not Found');
+  }
+
+  public static serverError(res: Response, e: Error) {
+    return StaticController.response(res, 500, e);
   }
 
 }

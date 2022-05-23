@@ -1,9 +1,20 @@
-import dotenv from 'dotenv';
-
 // Set the NODE_ENV to 'development' by default
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+process.env.NODE_ENV ??= 'development';
 
-if (!dotenv.config()) throw new Error("⚠️  Couldn't find .env file  ⚠️");
+import dotenv from 'dotenv';
+import logger from "./src/core/loaders/logger";
+
+const env = process.env.ENV || 'development';
+let envFile: string;
+if (env === 'development') envFile = '.env';
+else if (env === 'production') envFile = '.env.prod';
+else {
+  logger.error('Invalid environment: must be production or development.');
+  process.exit(1);
+}
+
+if (!dotenv.config({path: envFile}))
+  throw new Error("⚠️  Couldn't find .env file  ⚠️");
 if (!process.env.LDAP_ADMIN_PASSWORD || !process.env.LDAP_ORG_NAME || !process.env.LDAP_ORG_DOMAIN || !process.env.LDAP_URLS)
   throw new Error(`There is one or more undefined environment variables.`);
 

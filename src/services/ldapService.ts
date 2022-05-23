@@ -2,32 +2,30 @@ import {Service} from "typedi";
 import {Client, createClient, SearchOptions} from "ldapjs";
 
 import config from "../../config";
-import logger from "../core/loaders/logger";
 import ILdapService from "./iServices/iLdapService";
-import ResultCallback from "../dto/iNoIdDto/ResultCallback";
+import {ResultCallback} from "../dto/iNoIdDto/types";
 import {sleep} from "./utils";
+import Logger from "../core/loaders/logger";
 
 @Service()
 export default class LdapService implements ILdapService {
 
   private client: Client;
-  private ready = false;
+  private log;
 
   private readonly nextTry = 10000;
 
   //#region connect and bind to LDAP server
   private tryBind() {
-    logger.info(`🤞 Attempting to bind to LDAP server`);
+    this.log?.info(`🤞 Attempting to bind to LDAP server`);
     let bindDN = 'cn=admin,dc=' + config.ldap.orgDomain.split('.').reduce((prev, curr) => `${prev},dc=${curr}`);
     this.client.bind(bindDN, config.ldap.adminPwd, async e => {
       if (e as Error) {
-        logger.error(`Coultn't bind! ${e}`);
+        this.log?.error(`Coultn't bind! ${e}`);
         await sleep(this.nextTry);
         this.tryBind();
       } else {
-        logger.info('🌀 Binded to LDAP!');
-
-        this.ready = true;
+        this.log?.info('🌀 Binded to LDAP!');
       }
     });
   }
@@ -37,37 +35,36 @@ export default class LdapService implements ILdapService {
     config.ldap.urls.forEach(host => url.push(`ldap://${host}`));
     this.client = createClient({url});
 
-    ['error', 'connectError', 'connectTimeout', 'connectRefused'].forEach(errEvent => {
-      this.client.on(errEvent, async err => {
-        logger.error(`🔥 LDAP client ${errEvent} ${err.message}`);
-        await sleep(this.nextTry);
-        this.tryBind();
-      });
+    this.client.on('connectRefused', async err => {
+      this.log?.error(`🔥 LDAP client connectError ${err.message}`);
+      await sleep(this.nextTry);
+      this.tryConnect();
     });
 
     this.client.on('connect', () => {
-      logger.info('🤟 LDAP client connected');
+      this.log?.info('🤟 LDAP client connected');
       this.tryBind();
     });
   }
 
   //#endregion
 
-  constructor() {
+  constructor(log: boolean) {
+    if (log === undefined || log) this.log = Logger;
     const url: string[] = [];
-    config.ldap.urls.forEach(u => url.push(`ldap://${u}`));
-    this.client = createClient({url, log: logger});
+    config.ldap.urls.forEach(h => url.push(`ldap://${h}`));
+    this.client = createClient({url});
 
     this.tryConnect();
   }
 
   private middleware(): void {
     if (!this.isReady())
-      throw new Error(`The back-end hasn't connected to the LDAP server yet.`);
+      throw `The back-end hasn't connected to the LDAP server yet.`;
   }
 
   isReady() {
-    return this.ready;
+    return this.client.connected;
   }
 
   async waitUntilReady(): Promise<void> {
