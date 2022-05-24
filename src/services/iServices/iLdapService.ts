@@ -1,6 +1,6 @@
 import {SearchOptions} from 'ldapjs';
 
-import ResultCallback from "../../dto/iNoIdDto/types";
+import {ResultCallback} from "../../dto/iNoIdDto/types";
 
 export default interface ILdapService {
   isReady(): boolean;

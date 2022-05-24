@@ -3,6 +3,7 @@ import {Router} from 'express';
 import {Container} from "typedi";
 import config from "../../config";
 import ILdapService from "../services/iServices/iLdapService";
+import {orgUrlInDc} from "../services/utils";
 
 const route = Router();
 export default (app: Router) => {
@@ -11,7 +12,7 @@ export default (app: Router) => {
 
   route.post('/search', async (req, res) => {
 
-    ldapService.search('dc=isep,dc=ipp,dc=pt', {}, searchRes => {
+    ldapService.search(orgUrlInDc(), {}, searchRes => {
       if (searchRes instanceof Error) {
         StaticController.badRequest(res, searchRes.message);
       } else {
@@ -20,12 +21,7 @@ export default (app: Router) => {
     });
   });
 
-  route.post('/add', async (req, res) => {
-    ldapService.add({
-      cn: 'foo',
-      sn: 'bar',
-      email: 'foo@bar.com',
-      objectclass: 'fooPerson'
-    }, (r: any) => StaticController.ok(res, r));
+  route.post('/add', async (req, resp) => {
+    ldapService.add(req.body, (res: any) => StaticController.ok(resp, res));
   });
 }

@@ -1,0 +1,7 @@
+dn: ou=Groups,dc=shihadeh,dc=intern
+changetype: add
+objectclass: organizationalUnit
+ou: Groupsdn: ou=Users,dc=shihadeh,dc=intern
+changetype: add
+objectclass: organizationalUnit
+ou: Users

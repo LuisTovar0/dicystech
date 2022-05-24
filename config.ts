@@ -6,10 +6,10 @@ import logger from "./src/core/loaders/logger";
 
 const env = process.env.ENV || 'development';
 let envFile: string;
-if (env === 'development') envFile = '.env';
+if (['development', 'testing'].indexOf(env) !== -1) envFile = '.env';
 else if (env === 'production') envFile = '.env.prod';
 else {
-  logger.error('Invalid environment: must be production or development.');
+  logger.error('Invalid environment: must be production, testing or development.');
   process.exit(1);
 }
 
