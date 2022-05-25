@@ -1,7 +1,7 @@
 import {Service} from "typedi";
 import {Client, createClient, SearchOptions} from "ldapjs";
 
-import config from "../../config";
+import config from "../config";
 import ILdapService from "./iServices/iLdapService";
 import {ResultCallback} from "../dto/iNoIdDto/types";
 import {orgUrlInDc, sleep} from "./utils";

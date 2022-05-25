@@ -1,6 +1,6 @@
 import {Container} from 'typedi';
 import Logger from './logger';
-import config from "../../../config";
+import config from "../../config";
 
 export interface InjectablesAndSchemas {
   schemas: NamePathMap,

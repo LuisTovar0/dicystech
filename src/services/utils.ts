@@ -1,5 +1,5 @@
 import logger from "../core/loaders/logger";
-import config from "../../config";
+import config from "../config";
 
 export const sleep = (ms: number, log?: boolean) => new Promise(resolve => {
   log ??= false;

@@ -2,7 +2,7 @@ import {NextFunction, Request, Response, Router} from 'express';
 import {celebrate, Joi} from 'celebrate';
 import {Container} from 'typedi';
 
-import config from "../../config";
+import config from "../config";
 import IProductDto from "../dto/iProductDto";
 import {BaseController, StaticController} from "../core/infra/baseController";
 import IProductService from "../services/iServices/iProductService";

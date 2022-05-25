@@ -1,7 +1,7 @@
 import {StaticController} from "../core/infra/baseController";
 import {Router} from 'express';
 import {Container} from "typedi";
-import config from "../../config";
+import config from "../config";
 import ILdapService from "../services/iServices/iLdapService";
 import {orgUrlInDc} from "../services/utils";
 
