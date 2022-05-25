@@ -37,32 +37,14 @@ export default {
 
   deps: {
     repos: {
-      product: {
-        name: 'ProductRepo',
-        path: '../../db/repos/productRepo'
-      }
     },
     services: {
-      product: {
-        name: 'ProductService',
-        path: '../../services/productService'
-      },
       ldap: {
         name: 'LdapService',
         path: '../../services/ldapService'
       }
     },
     mappers: {
-      product: {
-        name: 'ProductMapper',
-        path: '../../mappers/productMapper'
-      }
-    },
-    schemas: {
-      product: {
-        name: 'ProductSchema',
-        path: '../../db/schemas/productSchema',
-      }
     }
   }
 };
