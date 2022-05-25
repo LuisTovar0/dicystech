@@ -10,6 +10,7 @@ import Logger from "../core/loaders/logger";
 @Service()
 export default class LdapService implements ILdapService {
 
+  // @ts-ignore this attribute is not defined in the constructor, but (mandatorily) in a method called by it
   private client: Client;
   private readonly log;
 
@@ -23,7 +24,7 @@ export default class LdapService implements ILdapService {
       if (e as Error) {
         this.log?.error(`Coultn't bind! ${e}`);
         await sleep(this.nextTry, !!this.log);
-        this.tryBind();
+        this.tryConnect();
       } else {
         this.log?.info('🌀 Binded to LDAP!');
       }
@@ -51,10 +52,6 @@ export default class LdapService implements ILdapService {
 
   constructor(log: boolean) {
     if (log === undefined || log) this.log = Logger;
-    const url: string[] = [];
-    config.ldap.urls.forEach(h => url.push(`ldap://${h}`));
-    this.client = createClient({url});
-
     this.tryConnect();
   }
 

@@ -1,7 +1,7 @@
-dn: ou=Groups,dc=shihadeh,dc=intern
+dn: ou=Groups,dc=isep,dc=ipp,dc=pt
 changetype: add
 objectclass: organizationalUnit
-ou: Groupsdn: ou=Users,dc=shihadeh,dc=intern
+ou: Groupsdn: ou=Users,dc=isep,dc=ipp,dc=pt
 changetype: add
 objectclass: organizationalUnit
 ou: Users

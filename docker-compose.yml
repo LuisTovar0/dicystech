@@ -8,6 +8,10 @@ services:
       - "636:636"
     env_file:
       - prod.env
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+
 #    ctfd:
 #      image: ctfd/ctfd:latest
 #      container_name: ctfd
@@ -18,4 +22,8 @@ services:
 #      container_name: hub
 #      ports:
 #        - "18000:3000"
+
+volumes:
+  ldap_data:
+  ldap_config:
 
