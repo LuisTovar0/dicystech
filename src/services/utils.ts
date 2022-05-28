@@ -1,5 +1,5 @@
 import logger from "../core/loaders/logger";
-import config from "../config";
+import config, {LdapConfig} from "../config";
 
 export const sleep = (ms: number, log?: boolean) => new Promise(resolve => {
   log ??= false;
@@ -8,5 +8,5 @@ export const sleep = (ms: number, log?: boolean) => new Promise(resolve => {
 });
 
 export function orgUrlInDc() {
-  return 'dc=' + config.ldap.orgDomain.split('.').reduce((prev, curr) => `${prev},dc=${curr}`);
+  return 'dc=' + (config.db as LdapConfig).orgDomain.split('.').reduce((prev, curr) => `${prev},dc=${curr}`);
 }

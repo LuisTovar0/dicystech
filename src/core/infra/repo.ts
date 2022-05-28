@@ -3,7 +3,7 @@ import {Model} from "mongoose";
 import ValidationError from "../logic/validationError";
 import DataModel from "./dataModel";
 
-export default class BaseRepo<TDataModel extends DataModel> {
+export class MongoRepo<TDataModel extends DataModel> {
 
   constructor(protected productSchema: Model<TDataModel>) {
   }

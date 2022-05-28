@@ -2,12 +2,6 @@ import {Container} from 'typedi';
 import Logger from './logger';
 import config from "../../config";
 
-export interface InjectablesAndSchemas {
-  mappers: NamePathMap,
-  repos: NamePathMap,
-  services: NamePathMap
-}
-
 export interface NamePathMap {
   [k: string]: NamePath;
 }
@@ -19,13 +13,12 @@ export interface NamePath {
 
 export default () => {
   try {
-    const depNamesPaths = <InjectablesAndSchemas>config.deps;
     Container.set('logger', Logger);
 
     // a class can only be set after its own dependencies are set
-    [depNamesPaths.mappers,// can only depend on each other (must be ordered)
-      depNamesPaths.repos, // depend on mappers
-      depNamesPaths.services// depend on repos and on each other (must be ordered)
+    [config.deps.mappers,   // can only depend on each other (must be ordered)
+      config.db.deps,       // repos and infrastructures, depend on mappers
+      config.deps.services  // depend on repos and on each other (must be ordered)
     ].forEach((deps) => {
       Object.entries(deps).forEach(([, dep]) => {
         // load the @Service() class by its path

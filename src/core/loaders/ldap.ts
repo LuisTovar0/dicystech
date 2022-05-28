@@ -1,18 +1,18 @@
 import {Service} from "typedi";
 import {Client, createClient, SearchOptions} from "ldapjs";
 
-import config from "../config";
-import ILdapService from "./iServices/iLdapService";
-import {ResultCallback} from "../dto/iNoIdDto/types";
-import {orgUrlInDc, sleep} from "./utils";
-import Logger from "../core/loaders/logger";
+import config, {LdapConfig} from "../../config";
+import {ResultCallback} from "../../dto/iNoIdDto/types";
+import {orgUrlInDc, sleep} from "../../services/utils";
+import Logger from "../../core/loaders/logger";
 
 @Service()
-export default class LdapService implements ILdapService {
+export default class Ldap {
 
-  // @ts-ignore this attribute is not defined in the constructor, but (mandatorily) in a method called by it
+  // @ts-ignore this attribute is not defined in the constructor, but always in a method called by it
   private client: Client;
   private readonly log;
+  private readonly dbConfig = config.db as LdapConfig;
 
   private readonly nextTry = 10000;
 
@@ -20,7 +20,7 @@ export default class LdapService implements ILdapService {
   private tryBind() {
     this.log?.info(`🤞 Attempting to bind to LDAP server`);
     let bindDN = 'cn=admin,' + orgUrlInDc();
-    this.client.bind(bindDN, config.ldap.adminPwd, async e => {
+    this.client.bind(bindDN, this.dbConfig.adminPwd, async e => {
       if (e as Error) {
         this.log?.error(`Coultn't bind! ${e}`);
         await sleep(this.nextTry, !!this.log);
@@ -33,7 +33,7 @@ export default class LdapService implements ILdapService {
 
   private tryConnect() {
     const url: string[] = [];
-    config.ldap.urls.forEach(host => url.push(`ldap://${host}`));
+    this.dbConfig.urls.forEach(host => url.push(`ldap://${host}`));
     this.client = createClient({url});
 
     this.client.on('connectRefused', async err => {
@@ -55,16 +55,15 @@ export default class LdapService implements ILdapService {
     this.tryConnect();
   }
 
-  static async get(): Promise<ILdapService> {
-    const ldapService = new LdapService(false);
+  static async get(): Promise<Ldap> {
+    const ldapService = new Ldap(false);
     await ldapService.waitUntilReady();
     return ldapService;
   }
 
-
-  private middleware(): void {
-    if (!this.isReady())
-      throw `The back-end hasn't connected to the LDAP server yet.`;
+  private middleware(callback?: ResultCallback): void {
+    if (!this.isReady() && callback)
+      callback(new Error(`The back-end hasn't connected to the LDAP server yet.`));
   }
 
   isReady() {
@@ -92,7 +91,7 @@ export default class LdapService implements ILdapService {
   }
 
   search(base: string, options: SearchOptions, callback: ResultCallback) {
-    this.middleware();
+    this.middleware(callback);
     this.client.search(base, options, (err, res) => {
       if (err) {
         callback(err);

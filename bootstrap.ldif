@@ -1,7 +1,19 @@
 dn: ou=Groups,dc=isep,dc=ipp,dc=pt
 changetype: add
 objectclass: organizationalUnit
-ou: Groupsdn: ou=Users,dc=isep,dc=ipp,dc=pt
+ou: Groups
+
+dn: ou=Users,dc=isep,dc=ipp,dc=pt
 changetype: add
 objectclass: organizationalUnit
 ou: Users
+
+dn: cn=developer,dc=isep,dc=ipp,dc=pt
+changetype: add
+objectclass: inetOrgPerson
+cn: developer
+givenname: developer
+sn: Developer
+displayname: Developer User
+mail: developer@gmail.com
+userpassword: developer_pass

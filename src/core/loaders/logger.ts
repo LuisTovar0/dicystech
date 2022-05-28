@@ -1,4 +1,6 @@
 import winston from 'winston';
+// Set the NODE_ENV to 'development' by default
+process.env.NODE_ENV ??= 'development';
 
 const transports = [];
 if (process.env.NODE_ENV !== 'development') {

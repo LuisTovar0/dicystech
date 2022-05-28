@@ -98,8 +98,8 @@ export class StaticController {
     return StaticController.response(res, 201, dto || "Created");
   }
 
-  public static badRequest(res: Response, message?: string) {
-    return StaticController.response(res, 400, message || "Bad Request");
+  public static badRequest<T>(res: Response, dto?: T) {
+    return StaticController.response(res, 400, dto || "Bad Request");
   }
 
   public static notFound(res: Response, message?: string) {
