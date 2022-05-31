@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import Logger from "../loaders/logger";
-import NotFoundError from "../logic/notFoundError";
-import ValidationError from "../logic/validationError";
+import {celebrate, SchemaOptions} from "celebrate";
+import {ClientAppError, NotFoundError, ValidationError} from "../logic/errors";
 
 export class BaseController {
 
@@ -21,7 +21,7 @@ export class BaseController {
   }
 
   public ok<T>(dto?: T) {
-    return StaticController.ok(this.res, dto);
+    return StaticController.k(this.res, dto);
   }
 
   public created<T>(dto?: T) {
@@ -79,6 +79,11 @@ export class StaticController {
       return StaticController.notFound(res, e.message);
     if (e instanceof ValidationError)
       return StaticController.badRequest(res, e.message);
+    if (e instanceof ClientAppError)
+      return StaticController.response(res, 417, {
+        errorType: "ClientAppError",
+        message: e.message
+      });
     return StaticController.serverError(res, e);
     // return next(e);
   }
@@ -90,7 +95,7 @@ export class StaticController {
     return res.status(code).json(body);
   }
 
-  public static ok<T>(res: Response, dto?: T) {
+  public static k<T>(res: Response, dto?: T) {
     return StaticController.response(res, 200, dto || "OK");
   }
 
@@ -110,4 +115,18 @@ export class StaticController {
     return StaticController.response(res, 500, e);
   }
 
+  public static notImplemented(res: Response) {
+    return StaticController.response(res, 501, `Sorry, not yet implemented!`);
+  }
+
+  /**
+   * Returns the response if the request was invalid; undefined otherwise.
+   */
+  static async validateReq(req: Request, res: Response, next: NextFunction, format: SchemaOptions, resMsg: (msg: string) => string) {
+    try {
+      return celebrate(format)(req, res, next);
+    } catch (e) {
+      return StaticController.badRequest(res, resMsg(e.message));
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import ValidationError from "./validationError";
+import {ClientAppError, ValidationError} from "./errors";
 
 export interface IGuardArgument {
   argument: any;
@@ -48,4 +48,17 @@ export class Guard {
       this.inRange(num, min, max, argumentName);
   }
 
+  public static isEmail(str: string) {
+    return this.matchRegex(str, /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}])|(([a-zA-Z\-\d]+\.)+[a-zA-Z]{2,}))$/,
+      new ValidationError(`${str} is an invalid e-mail`));
+  }
+
+  static sha256hash(str: string, argName: string) {
+    return this.matchRegex(str, /^[A-Fa-f\d]{64}$/,
+      new ClientAppError(`Client sent an invalid SHA-256 hash for ${argName}.`));
+  }
+
+  static matchRegex(str: string, regex: RegExp, e: Error) {
+    if (!regex.test(str)) throw e;
+  }
 }

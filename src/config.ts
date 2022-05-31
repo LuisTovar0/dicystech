@@ -33,20 +33,19 @@ switch (dbType) {
           name: 'Ldap',
           path: './ldap'
         },
-        product: {
-          name: 'LdapProductRepo',
-          path: '../../db/repos/ldap/productRepo'
-        }
       }
     } as LdapConfig;
     break;
   case"mongo":
+    if (!process.env.MONGODB_URL)
+      throw new Error(`There is one or more undefined environment variables.`);
     dbConfig = {
-      url: "mongodb://localhost:27017/test",
+      url: `mongodb://${process.env.MONGODB_URL}`,
+      connected: false,
       deps: {
-        product: {
-          name: 'MongoProductRepo',
-          path: '../../db/repos/mongo/productRepo'
+        user: {
+          name: 'MongoUserRepo',
+          path: '../../db/repos/mongo/userRepo'
         }
       }
     } as MongoConfig;
@@ -64,18 +63,16 @@ export default {
   db: dbConfig,
 
   deps: {
-    // repos: {
-    // } as NamePathMap,
     services: {
-      product: {
-        name: 'ProductService',
-        path: '../../services/ProductService'
+      user: {
+        name: 'UserService',
+        path: '../../services/userService'
       }
     } as NamePathMap,
     mappers: {
-      product: {
-        name: 'ProductMapper',
-        path: '../../mappers/ProductMapper'
+      user: {
+        name: 'UserMapper',
+        path: '../../mappers/userMapper'
       }
     } as NamePathMap
   }
@@ -90,6 +87,7 @@ export interface LdapConfig {
 }
 
 export interface MongoConfig {
-  deps: NamePathMap,
   url: string,
+  connected: boolean,
+  deps: NamePathMap,
 }

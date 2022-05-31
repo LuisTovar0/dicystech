@@ -1,12 +1,12 @@
 import {Router} from 'express';
 import debug from './debugController';
-import product from './productController';
+import user from './userController';
 
 export default () => {
   const router = Router();
 
   debug(router);
-  product(router);
+  user(router);
 
   return router;
 }

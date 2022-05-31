@@ -5,11 +5,10 @@ import Logger from "./logger";
 import {Application} from 'express';
 import config from "../../config";
 
-export default async (expressApp: Application) => {
+export default (expressApp: Application) => {
 
   if (config.dbType === `mongo`) {
-    await mongoose();
-    Logger.info(`🔧 Connected to the MongoDB database`);
+    mongoose();
   }
 
   setUpDependencyInjections();
