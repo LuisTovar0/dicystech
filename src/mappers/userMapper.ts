@@ -4,9 +4,14 @@ import IUserDataModel from "../db/dataModel/iUserDataModel";
 import User from "../domain/user/user";
 import IUserDto from "../dto/iUserDto";
 import UniqueEntityID from "../core/domain/uniqueEntityID";
+import iUserHiddenPwd from "../dto/iUserHiddenPwd";
 
 @Service()
 export default class UserMapper implements IUserMapper {
+
+  dtoToHiddenPwdDto({domainId, email}: IUserDto): iUserHiddenPwd {
+    return {domainId, email};
+  }
 
   dataModelToDTO(dataModel: IUserDataModel): IUserDto {
     return {

@@ -4,12 +4,12 @@ import config from "../config";
 import IUserRepo from "../db/repos/iRepos/iUserRepo";
 import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
 import AuthenticationResult from "../dto/nonEntity/authenticationResult";
-import IUserDto from "../dto/iUserDto";
 import IUserMapper from "../mappers/iMappers/iUserMapper";
 import IUserService from "./iServices/iUserService";
 import User from "../domain/user/user";
 import UniqueEntityID from "../core/domain/uniqueEntityID";
 import {NotFoundError} from "../core/logic/errors";
+import IUserHiddenPassword from "../dto/iUserHiddenPwd";
 
 @Service()
 export default class UserService implements IUserService {
@@ -22,12 +22,13 @@ export default class UserService implements IUserService {
   ) {
   }
 
-  async addUser(userDto: INoIdUserDto): Promise<IUserDto> {
+  async addUser(userDto: INoIdUserDto): Promise<IUserHiddenPassword> {
     const user = User.create(userDto);
-    return await this.repo.save(this.mapper.domainToDTO(user));
+    const persistedDto = await this.repo.save(this.mapper.domainToDTO(user));
+    return this.mapper.dtoToHiddenPwdDto(persistedDto);
   }
 
-  async updateUserPwd(email: string, newPwd: string): Promise<IUserDto> {
+  async updateUserPwd(email: string, newPwd: string): Promise<IUserHiddenPassword> {
     const existing = await this.repo.getByEmail(email);
     if (existing === null) throw new NotFoundError(`User with e-mail ${email} does not exist.`);
 
@@ -36,7 +37,8 @@ export default class UserService implements IUserService {
       password: newPwd
     }, new UniqueEntityID(existing.domainId));
 
-    return await this.repo.save(this.mapper.domainToDTO(newUser));
+    const persistedDto = await this.repo.save(this.mapper.domainToDTO(newUser));
+    return this.mapper.dtoToHiddenPwdDto(persistedDto);
   }
 
   async verifyPassword(email: string, pwd: string): Promise<AuthenticationResult> {

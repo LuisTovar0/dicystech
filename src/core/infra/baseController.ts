@@ -80,10 +80,7 @@ export class StaticController {
     if (e instanceof ValidationError)
       return StaticController.badRequest(res, e.message);
     if (e instanceof ClientAppError)
-      return StaticController.response(res, 417, {
-        errorType: "ClientAppError",
-        message: e.message
-      });
+      return StaticController.response(res, 417, e.message);
     return StaticController.serverError(res, e);
     // return next(e);
   }
