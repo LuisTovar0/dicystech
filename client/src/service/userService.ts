@@ -1,0 +1,28 @@
+import axios, {AxiosResponse} from 'axios';
+import {Service} from 'typedi';
+
+import IUserService from "./iServices/iUserService";
+import RegisterDto from "../dto/registerDto";
+import UserHiddenPwd from "../dto/userHiddenPwd";
+import config from "../configs/config";
+import AuthenticationResult from "../dto/authenticationResult";
+
+export interface AxiosCallbacks<RespT> {
+  then?: (result: AxiosResponse<RespT>) => void,
+  catchEx?: (reason: any) => void
+}
+
+@Service()
+export default class UserService implements IUserService {
+
+  register(info: RegisterDto, callbacks?: AxiosCallbacks<UserHiddenPwd>): void {
+    axios.post<UserHiddenPwd>(config.backendUrl + '/api/user', info)
+      .then(callbacks?.then).catch(callbacks?.catchEx);
+  }
+
+  login(email: string, password: string,callbacks?:AxiosCallbacks<AuthenticationResult>): void {
+    axios.post<AuthenticationResult>(config.backendUrl+'/api/user/authenticate',{email,password})
+      .then(callbacks?.then).catch(callbacks?.catchEx);
+  }
+
+}
