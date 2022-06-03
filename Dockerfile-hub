@@ -1,12 +1,10 @@
-# build command:
-# docker build -t tovawr/dicystech-hub .
 FROM node:16.13-alpine
 
 WORKDIR /app
 
-COPY ./hub/package*.json ./
-RUN npm install #--production
-RUN npm audit fix
+COPY package*.json ./
+RUN npm install --production
+COPY ./ ./
 
 ENV ENV="production"
 EXPOSE 3000
