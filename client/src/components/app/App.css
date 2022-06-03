@@ -1,17 +1,46 @@
 .App {
+    padding-top: calc(var(--topbar-height) - 10px);
     text-align: center;
-    background-color: #5a636e;
+    background-color: var(--color1);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
-    color: white;
+    color: black;
 }
 
 .field input {
     margin-left: 20px;
+}
+
+.topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--topbar-height);
+    display: inline-flex;
+    align-items: center;
+    background-image: linear-gradient(var(--color0), var(--color0), var(--color0), var(--color0), rgba(0, 0, 0, 0));
+    color: black;
+    font-weight: 600;
+    padding: 0 16px;
+}
+
+.topbar img {
+    max-height: 90px;
+}
+
+#pagename {
+    /*positioning*/
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    /*other*/
+    font-size: 2rem;
 }
 
 button {

@@ -11,3 +11,9 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root {
+    --topbar-height: 120px;
+    --color0: hsl(229, 35%, 72%);
+    --color1: hsl(0, 0%, 100%);
+}

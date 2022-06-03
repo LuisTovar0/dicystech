@@ -1,4 +1,5 @@
-import React, {Component, useId, useState} from "react";
+import React, {useId, useState} from "react";
+import './auth.css';
 
 export type State = [string, React.Dispatch<React.SetStateAction<string>>];
 export type FieldInfo = { name: string, id: string, input: State }
@@ -7,11 +8,7 @@ export const fieldInfoBoilerplate = (fieldNames: string[]): FieldInfo[] => {
   return fieldNames.map(name => ({name, id: useId(), input: useState('')}));
 };
 
-export interface FieldsProps {
-  fields: FieldInfo[];
-}
-
-export default function Fields({fields}: FieldsProps) {
+export default function Fields({fields}: { fields: FieldInfo[] }) {
   const rows = fields.map(({id, input, name}) => {
     const [inputValue, setInput] = input;
     return (
