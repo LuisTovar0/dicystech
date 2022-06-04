@@ -1,4 +1,5 @@
 import {Inject, Service} from "typedi";
+import jwt from 'jsonwebtoken';
 
 import config from "../config";
 import IUserRepo from "../db/repos/iRepos/iUserRepo";
@@ -22,6 +23,11 @@ export default class UserService implements IUserService {
   ) {
   }
 
+  async getUser(searchEmail: string): Promise<IUserHiddenPassword> {
+    const {domainId, email} = await this.repo.getByEmail(searchEmail);
+    return {domainId, email};
+  }
+
   async addUser(userDto: INoIdUserDto): Promise<IUserHiddenPassword> {
     const user = User.create(userDto);
     const persistedDto = await this.repo.save(this.mapper.domainToDTO(user));
@@ -43,7 +49,12 @@ export default class UserService implements IUserService {
 
   async verifyPassword(email: string, pwd: string): Promise<AuthenticationResult> {
     const user = await this.repo.getByEmail(email);
-    return {passwordIsCorrect: user.password === pwd};
+    return {
+      passwordIsCorrect: user.password.trim() === pwd.trim(),
+      jwtToken: jwt.sign(user.domainId, config.api.jwt.accessSecret)
+    };
   }
+
+
 
 }

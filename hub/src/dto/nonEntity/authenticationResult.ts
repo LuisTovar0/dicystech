@@ -1,3 +1,4 @@
 export default interface AuthenticationResult {
-  passwordIsCorrect: boolean;
+  passwordIsCorrect: boolean,
+  jwtToken: string
 }
