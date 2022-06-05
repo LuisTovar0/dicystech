@@ -5,10 +5,9 @@ import jwt from 'jsonwebtoken';
 
 import config from "../config";
 import IUserService from "../services/iServices/iUserService";
-import {BaseController, StaticController} from "../core/infra/baseController";
+import {BaseController} from "../core/infra/baseController";
 import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";
-import {authorization} from "./index";
 
 const route = Router();
 
@@ -37,20 +36,6 @@ export default (app: Router) => {
         ctrl.handleException(e);
       }
     }
-  );
-
-  route.post('/newpassword',
-    celebrate({
-      body: {
-        email: Joi.string().required(),
-        password: Joi.string().required()
-      }
-    }), authorization,
-    async (req, res) =>
-      await StaticController.simpleController(res, async () => {
-        const {email, pwd} = req.body;
-        return await service.updateUserPwd(email, pwd);
-      }, StaticController.accepted)
   );
 
   route.post('/authenticate',
