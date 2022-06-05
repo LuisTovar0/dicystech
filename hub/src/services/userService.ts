@@ -1,5 +1,4 @@
 import {Inject, Service} from "typedi";
-import jwt from 'jsonwebtoken';
 
 import config from "../config";
 import IUserRepo from "../db/repos/iRepos/iUserRepo";
@@ -11,6 +10,7 @@ import User from "../domain/user/user";
 import UniqueEntityID from "../core/domain/uniqueEntityID";
 import {NotFoundError} from "../core/logic/errors";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";
+import IUserDto from "../dto/iUserDto";
 
 @Service()
 export default class UserService implements IUserService {
@@ -23,9 +23,15 @@ export default class UserService implements IUserService {
   ) {
   }
 
-  async getUser(searchEmail: string): Promise<IUserHiddenPassword> {
-    const {domainId, email} = await this.repo.getByEmail(searchEmail);
-    return {domainId, email};
+  async getUserHidePwd(email: string): Promise<IUserHiddenPassword> {
+    const user = await this.getUser(email);
+    return user as IUserHiddenPassword;
+  }
+
+  async getUser(email: string): Promise<IUserDto> {
+    const user = await this.repo.getByEmail(email);
+    if (user === null) throw new NotFoundError(`User with e-mail ${email} does not exist.`);
+    return user;
   }
 
   async addUser(userDto: INoIdUserDto): Promise<IUserHiddenPassword> {
@@ -35,8 +41,7 @@ export default class UserService implements IUserService {
   }
 
   async updateUserPwd(email: string, newPwd: string): Promise<IUserHiddenPassword> {
-    const existing = await this.repo.getByEmail(email);
-    if (existing === null) throw new NotFoundError(`User with e-mail ${email} does not exist.`);
+    const existing = await this.getUser(email);
 
     const newUser = User.create({
       email: existing.email,
@@ -48,13 +53,8 @@ export default class UserService implements IUserService {
   }
 
   async verifyPassword(email: string, pwd: string): Promise<AuthenticationResult> {
-    const user = await this.repo.getByEmail(email);
-    return {
-      passwordIsCorrect: user.password.trim() === pwd.trim(),
-      jwtToken: jwt.sign(user.domainId, config.api.jwt.accessSecret)
-    };
+    const {password, domainId} = await this.getUser(email);
+    return {passwordIsCorrect: password.trim() === pwd.trim(), domainId};
   }
-
-
 
 }

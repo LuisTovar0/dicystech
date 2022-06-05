@@ -7,7 +7,6 @@ import IUserMapper from "../../../mappers/iMappers/iUserMapper";
 import IUserDataModel from "../../dataModel/iUserDataModel";
 import userSchema from "../mongo/schemas/userSchema";
 import IUserRepo from "../iRepos/iUserRepo";
-import {NotFoundError} from "../../../core/logic/errors";
 
 
 @Service()
@@ -26,9 +25,9 @@ export default class MongoUserRepo extends MongoRepo<IUserDataModel> implements 
     return this.mapper.dataModelToDTO(persistedUser);
   }
 
-  async getByEmail(userEmail: string): Promise<IUserDto> {
+  async getByEmail(userEmail: string): Promise<IUserDto | null> {
     const userDataModel = await this.schema.findOne({email: userEmail});
-    if (userDataModel === null) throw new NotFoundError(`Product with the e-mail ${userEmail} does not exist.`);
+    if (userDataModel === null) return null;
     return this.mapper.dataModelToDTO(userDataModel);
   }
 

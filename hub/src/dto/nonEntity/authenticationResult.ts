@@ -1,4 +1,5 @@
-export default interface AuthenticationResult {
+import WithId from "../../core/infra/withId";
+
+export default interface AuthenticationResult extends WithId {
   passwordIsCorrect: boolean,
-  jwtToken: string
 }

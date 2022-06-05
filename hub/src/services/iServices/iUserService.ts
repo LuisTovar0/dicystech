@@ -4,7 +4,7 @@ import IUserHiddenPassword from "../../dto/iUserHiddenPwd";
 
 export default interface IUserService {
 
-  getUser(searchEmail: string): Promise<IUserHiddenPassword>;
+  getUserHidePwd(searchEmail: string): Promise<IUserHiddenPassword>;
 
   addUser(userDto: INoIdUserDto): Promise<IUserHiddenPassword>;
 

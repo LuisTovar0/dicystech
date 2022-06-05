@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import logger from "./core/loaders/logger";
 import {NamePathMap} from "./core/loaders/dependencyInjector";
+import {SignOptions} from "jsonwebtoken";
 
 const env = process.env.ENV || 'development';
 let envFile: string;
@@ -57,7 +58,8 @@ export default {
     port: Number(process.env.PORT) || 4000,
     jwt: {
       accessSecret: process.env.ACCESS_TOKEN_SECRET as string,
-      refreshSecret: process.env.REFRESH_TOKEN_SECRET as string
+      refreshSecret: process.env.REFRESH_TOKEN_SECRET as string,
+      signOptions: {noTimestamp: true} as SignOptions
     }
   },
 

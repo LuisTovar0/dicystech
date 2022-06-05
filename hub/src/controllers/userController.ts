@@ -8,7 +8,6 @@ import IUserService from "../services/iServices/iUserService";
 import {BaseController, StaticController} from "../core/infra/baseController";
 import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";
-import logger from "../core/loaders/logger";
 import {authorization} from "./index";
 
 const route = Router();
@@ -26,17 +25,16 @@ export default (app: Router) => {
         password: Joi.string().required()
       }
     }),
-    async (req, res, next) => {
-      const crtl = new BaseController(req, res, next);
+    async (req, res) => {
+      const ctrl = new BaseController(req, res);
       try {
         const user = await service.addUser(req.body as INoIdUserDto);
-        const accessJwt = jwt.sign(user, config.api.jwt.accessSecret);
-        const refreshToken = jwt.sign(user, config.api.jwt.refreshSecret);
+        const accessJwt = jwt.sign(user, config.api.jwt.accessSecret, config.api.jwt.signOptions);
+        const refreshToken = jwt.sign(user, config.api.jwt.refreshSecret, config.api.jwt.signOptions);
         const body = {...user, accessJwt};
-        return crtl.response(201, body, [{name: 'refreshJwt', value: refreshToken}, {name: 'hello', value: 'world'}]);
+        return ctrl.response(201, body, [{name: `refreshJwt`, value: refreshToken}]);
       } catch (e) {
-        console.log('b');
-        crtl.handleException(e);
+        ctrl.handleException(e);
       }
     }
   );
@@ -48,8 +46,8 @@ export default (app: Router) => {
         password: Joi.string().required()
       }
     }), authorization,
-    async (req, res, next) =>
-      await StaticController.simpleController(res, next, async () => {
+    async (req, res) =>
+      await StaticController.simpleController(res, async () => {
         const {email, pwd} = req.body;
         return await service.updateUserPwd(email, pwd);
       }, StaticController.accepted)
@@ -61,34 +59,47 @@ export default (app: Router) => {
         email: Joi.string().required(),
         password: Joi.string().required()
       }
-    }), authorization,
-    async (req, res, next) =>
-      await StaticController.simpleController(res, next,
-        async () => {
-          const {email, pwd} = req.body;
-          return await service.verifyPassword(email, pwd);
-        },
-        StaticController.k)
+    }),
+    async (req, res) => {
+      const ctrl = new BaseController(req, res);
+      try {
+        const {email, password} = req.body;
+        const body = await service.verifyPassword(email, password);
+        if (!body.passwordIsCorrect) return ctrl.response(401);
+
+        const jsonForWt = {domainId: body.domainId, email};
+        const accessJwt = jwt.sign(jsonForWt, config.api.jwt.accessSecret, config.api.jwt.signOptions);
+        const refreshJwt = jwt.sign(jsonForWt, config.api.jwt.refreshSecret, config.api.jwt.signOptions);
+        return ctrl.response(200, accessJwt, [{name: 'refreshJwt', value: refreshJwt}]);
+      } catch (e) {
+        return ctrl.handleException(e);
+      }
+    }
   );
 
-  route.get('/newAccessToken',
+  route.get('/refreshToken',
     celebrate({
       cookies: {
-        refreshToken: Joi.string().required()
+        refreshJwt: Joi.string().required()
       }
     }),
     async (req, res) => {
-      const user = JSON.parse(jwt.verify(req.cookies.refreshToken, config.api.jwt.refreshSecret).toString());
-      if (user as IUserHiddenPassword) {
-        const existingUser = await service.getUser(user.email);
+      const ctrlr = new BaseController(req, res);
+      try {
+        let user;
+        try {
+          user = jwt.verify(req.cookies.refreshJwt, config.api.jwt.refreshSecret) as IUserHiddenPassword;
+        } catch (e) {
+          return ctrlr.response(403, 'Bad refresh token: wrong JSON object');
+        }
+        const existingUser = await service.getUserHidePwd(user.email);
         if (existingUser.domainId !== user.domainId || existingUser.email !== user.email)
-          return StaticController.response(res, 403, 'token does not correspond to user');
+          return ctrlr.response(403, 'token does not correspond to user');
+
         const newAccessToken = jwt.sign(user, config.api.jwt.accessSecret);
-        return StaticController.k(res, newAccessToken);
-      } else {
-        logger.error(`the refresh token wasn't a user`);
-        console.log(user);
-        return StaticController.response(res, 403, 'bad refresh token! is not the correct JSON!');
+        return ctrlr.created(newAccessToken);
+      } catch (e) {
+        return ctrlr.handleException(e);
       }
     });
 
