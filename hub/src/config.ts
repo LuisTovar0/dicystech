@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import logger from "./core/loaders/logger";
 import {NamePathMap} from "./core/loaders/dependencyInjector";
+import {SignOptions} from "jsonwebtoken";
 
 const env = process.env.ENV || 'development';
 let envFile: string;
@@ -17,16 +18,13 @@ if (!dbType) throw `DB_TYPE environment variable must be defined`;
 let dbConfig: LdapConfig | MongoConfig;
 switch (dbType) {
   case "ldap":
-    if (!process.env.LDAP_ADMIN_PASSWORD || !process.env.LDAP_ORGANISATION ||
-      !process.env.LDAP_DOMAIN || !process.env.LDAP_URLS)
-      throw new Error(`There is one or more undefined environment variables.`);
-    const orgDomain = process.env.LDAP_DOMAIN.trim();
+    const orgDomain = (process.env.LDAP_DOMAIN as string).trim();
     const domRegex = /^((?!-))(xn--)?[a-z\d][a-z\d-_]{0,61}[a-z\d]?\.(xn--)?([a-z\d\-]{1,61}|[a-z\d-]{1,30}\.[a-z]{2,})$/;
     if (!domRegex.test(orgDomain)) throw new Error('The provided organization domain is not valid.');
     dbConfig = {
-      adminPwd: process.env.LDAP_ADMIN_PASSWORD.trim(),
-      orgName: process.env.LDAP_ORGANISATION.trim(),
-      urls: process.env.LDAP_URLS.trim().split(','),
+      adminPwd: (process.env.LDAP_ADMIN_PASSWORD as string).trim(),
+      orgName: (process.env.LDAP_ORGANISATION as string).trim(),
+      urls: (process.env.LDAP_URLS as string).trim().split(','),
       orgDomain,
       deps: {
         ldap: {
@@ -37,10 +35,9 @@ switch (dbType) {
     } as LdapConfig;
     break;
   case"mongo":
-    if (!process.env.MONGODB_URL)
-      throw new Error(`There is one or more undefined environment variables.`);
+    if (!process.env.MONGODB_URL) logger.error(`You should define a MONGODB_URL environment variable.`);
     dbConfig = {
-      url: `mongodb://${process.env.MONGODB_URL}`,
+      url: 'mongodb://' + (process.env.MONGODB_URL || 'mongo:27017'),
       connected: false,
       deps: {
         user: {
@@ -55,9 +52,16 @@ switch (dbType) {
 }
 
 export default {
-  port: process.env.PORT || 3000,
 
-  api: {prefix: '/api'},
+  api: {
+    prefix: '/api',
+    port: Number(process.env.PORT) || 4000,
+    jwt: {
+      accessSecret: process.env.ACCESS_TOKEN_SECRET as string,
+      refreshSecret: process.env.REFRESH_TOKEN_SECRET as string,
+      signOptions: {noTimestamp: true} as SignOptions
+    }
+  },
 
   dbType,
   db: dbConfig,

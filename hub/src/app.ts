@@ -9,9 +9,9 @@ const app = express();
 
 require('./core/loaders').default(app);
 
-app.listen(config.port, () => Logger.info(`
+app.listen(config.api.port, () => Logger.info(`
          #####################################
-         🛡️  Server listening on port: ${config.port} 🛡️ 
+         🛡️  Server listening on port: ${config.api.port} 🛡️ 
          #####################################
   `)).on('error', err => {
   Logger.error(err);

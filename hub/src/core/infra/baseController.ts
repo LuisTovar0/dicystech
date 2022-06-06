@@ -1,6 +1,5 @@
-import {NextFunction, Request, Response} from 'express';
+import {Request, Response} from 'express';
 import Logger from "../loaders/logger";
-import {celebrate, SchemaOptions} from "celebrate";
 import {ClientAppError, NotFoundError, ValidationError} from "../logic/errors";
 
 export class BaseController {
@@ -8,16 +7,15 @@ export class BaseController {
   constructor(
     private req: Request,
     private res: Response,
-    private next: NextFunction
   ) {
   }
 
   public handleException(e: Error) {
-    return StaticController.handleException(this.res, this.next, e);
+    return StaticController.handleException(this.res, e);
   }
 
-  public response<T>(code: number, content: T | string) {
-    return StaticController.response(this.res, code, content);
+  public response<T>(code: number, content?: T | string, cookies?: { name: string, value: string }[]) {
+    return StaticController.response(this.res, code, content, cookies);
   }
 
   public ok<T>(dto?: T) {
@@ -64,17 +62,17 @@ export class BaseController {
 
 export class StaticController {
 
-  public static async simpleController(resp: Response, next: NextFunction,
-                                       call: () => any, retCode: <T>(resp: Response, content?: T | string) => Response) {
+  public static async simpleController<T1>(resp: Response, call: () => T1,
+                                           retCode: (resp: Response, content?: T1 | string) => Response) {
     try {
       const res = await call();
       return retCode(resp, res);
     } catch (e) {
-      return StaticController.handleException(resp, next, e);
+      return StaticController.handleException(resp, e);
     }
   }
 
-  public static handleException(res: Response, next: NextFunction, e: Error) {
+  public static handleException(res: Response, e: Error) {
     if (e instanceof NotFoundError)
       return StaticController.notFound(res, e.message);
     if (e instanceof ValidationError)
@@ -85,11 +83,11 @@ export class StaticController {
     // return next(e);
   }
 
-  public static response<T>(res: Response, code: number, content: T | string) {
-    let body;
-    if (content as T) body = content;
-    else body = {message: content};
-    return res.status(code).json(body);
+  public static response<T>(res: Response, code: number, content?: T | string, cookies?: { name: string, value: string }[]): Response {
+    let resp = res.status(code);
+    cookies?.forEach(({name, value}) => resp = resp.cookie(name, value));
+    if (content) return resp.json(content);
+    else return resp.send();
   }
 
   public static k<T>(res: Response, dto?: T) {
@@ -100,8 +98,16 @@ export class StaticController {
     return StaticController.response(res, 201, dto || "Created");
   }
 
+  public static accepted<T>(res: Response, dto?: T) {
+    return StaticController.response(res, 202, dto || "Accepted");
+  }
+
   public static badRequest<T>(res: Response, dto?: T) {
     return StaticController.response(res, 400, dto || "Bad Request");
+  }
+
+  public static unauthorized(res: Response, message?: string) {
+    return StaticController.response(res, 401, message || "Unauthorized");
   }
 
   public static notFound(res: Response, message?: string) {
@@ -116,14 +122,4 @@ export class StaticController {
     return StaticController.response(res, 501, `Sorry, not yet implemented!`);
   }
 
-  /**
-   * Returns the response if the request was invalid; undefined otherwise.
-   */
-  static async validateReq(req: Request, res: Response, next: NextFunction, format: SchemaOptions, resMsg: (msg: string) => string) {
-    try {
-      return celebrate(format)(req, res, next);
-    } catch (e) {
-      return StaticController.badRequest(res, resMsg(e.message));
-    }
-  }
 }
