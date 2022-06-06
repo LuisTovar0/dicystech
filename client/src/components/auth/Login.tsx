@@ -3,14 +3,14 @@ import {useNavigate} from "react-router-dom";
 import crypto from "crypto-js";
 import './auth.css';
 
-import {FieldInfo} from "./Fields";
 import UserService from "../../service/userService";
-import AuthenticationResult from "../../dto/authenticationResult";
-import AuthForm from "./AuthForm";
-import {AppComponentProps} from "../app/App";
+import AuthForm, {FieldInfo} from "./AuthForm";
+import {AppInfoSetter} from "../app/App";
+import config from "../../configs/config";
 
-export function Login({setPageName}: AppComponentProps) {
+export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
   const navigate = useNavigate();
+  const fieldNames = ['email', 'password'];
 
   const login = (fields: FieldInfo[], setMessage: Dispatch<SetStateAction<string>>) => {
     const infos = fields.map(field => field.input[0]);
@@ -18,22 +18,22 @@ export function Login({setPageName}: AppComponentProps) {
     const password = infos[1];
     const encryptedPassword = crypto.SHA256(password).toString();
     const service = new UserService();
-    service.login(infos[1], encryptedPassword,
+    service.login(infos[0], encryptedPassword,
       {
         then: r => {
-          if (r.data as AuthenticationResult) {
-            navigate('/home');
-          } else {
-            setMessage(`Unexpected response format from the server.`);
-            console.log(r.data);
-          }
+          config.accessJwt = r.data;
+          navigate('/home');
         },
-        catchEx: r => setMessage(`Unexpected error: ${r}`)
+        catchEx: ({response}) => {
+          setMessage([404, 401].indexOf(response.status) != -1
+            ? `Those credentials don't match.`
+            : `Unexpected error: ${response.data}`);
+        }
       });
   };
 
   return (
-    <AuthForm setPageName={setPageName} formName={'Login'} fieldNames={['email', 'password']}
+    <AuthForm topInfoState={topInfoState} formName={'Login'} fieldNames={fieldNames}
               alternativeButton={{navigate: '/register', description: 'Register instead'}} onClick={login}/>
   );
 }

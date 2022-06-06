@@ -4,12 +4,11 @@ import crypto from 'crypto-js';
 import './auth.css';
 
 import UserService from "../../service/userService";
-import {FieldInfo} from "./Fields";
-import UserHiddenPwd from "../../dto/userHiddenPwd";
-import AuthForm from "./AuthForm";
-import {AppComponentProps} from "../app/App";
+import AuthForm, {FieldInfo} from "./AuthForm";
+import {AppInfoSetter} from "../app/App";
+import config from "../../configs/config";
 
-export function Register({setPageName}: AppComponentProps) {
+export function Register({topInfoState}: { topInfoState: AppInfoSetter }) {
   const navigate = useNavigate();
 
   function register(fields: FieldInfo[], setMessage: Dispatch<SetStateAction<string>>) {
@@ -29,9 +28,9 @@ export function Register({setPageName}: AppComponentProps) {
     service.register({email: infos[0], password: crypto.SHA256(password).toString()},
       {
         then: r => {
-          if (r.data as UserHiddenPwd) {
-            navigate('/home');
-          } else setMessage(`Internal error: infrastructure didn't return correct format.`);
+          console.log(r);
+          config.accessJwt = r.data.accessJwt as string;
+          navigate('/');
         },
         catchEx: r => setMessage(String(r))
       }
@@ -39,7 +38,7 @@ export function Register({setPageName}: AppComponentProps) {
   }
 
   return (
-    <AuthForm formName={'Register'} fieldNames={['email', 'password']} setPageName={setPageName}
+    <AuthForm formName={'Register'} fieldNames={['email', 'password']} topInfoState={topInfoState}
               alternativeButton={{navigate: '/login', description: 'Log in instead'}} onClick={register}/>
   );
 }
