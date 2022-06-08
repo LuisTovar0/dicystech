@@ -1,10 +1,13 @@
 import {useNavigate} from "react-router-dom";
-import React, {Dispatch, SetStateAction, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 
-import Fields, {FieldInfo, fieldInfoBoilerplate} from "./Fields";
-import {AppComponentProps} from "../app/App";
+import {AppInfoSetter} from "../app/App";
 
-export interface FormProps extends AppComponentProps {
+export type FieldInfo = { name: string, input: State }
+export type State = [string, Dispatch<SetStateAction<string>>];
+
+export interface FormProps {
+  topInfoState: AppInfoSetter,
   formName: string,
   fieldNames: string[],
   alternativeButton: {
@@ -14,18 +17,41 @@ export interface FormProps extends AppComponentProps {
   onClick: (fields: FieldInfo[], setMessage: Dispatch<SetStateAction<string>>) => void;
 }
 
-export default function AuthForm({setPageName, formName, fieldNames, alternativeButton, onClick}: FormProps) {
-  setPageName(formName);
+export default function AuthForm({topInfoState, formName, fieldNames, alternativeButton, onClick}: FormProps) {
+  useEffect(() => {
+    const newState = {
+      pageName: formName,
+      options: [
+        <button key="auth-instead" onClick={() => navigate(alternativeButton.navigate)}>
+          {alternativeButton.description}</button>
+      ]
+    };
+    const [state, setState] = topInfoState;
+    if (state.pageName !== newState.pageName) setState(newState);
+  });
+
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
-  const fields = fieldInfoBoilerplate(fieldNames);
+  const fields = fieldNames.map(name => ({name, input: useState('')}));
+  const rows = fields.map(({input, name}) => {
+    const [inputValue, setInput] = input;
+    return (
+      <tr key={name}>
+        <td align="left">{name}</td>
+        <td><input id={name} type={name.includes('password') ? 'password' : ''} value={inputValue}
+          //@ts-ignore
+                   onInput={event => setInput(event.target.value)}/></td>
+      </tr>
+    );
+  });
 
   return (
     <div className="authform">
-      <Fields fields={fields}/>
-      <button onClick={() => navigate(alternativeButton.navigate)}>{alternativeButton.description}</button>
-      <button onClick={() => onClick(fields, setMessage)}>Log In</button>
-      <label>{message}</label>
+      <table className="fields">
+        <tbody>{rows}</tbody>
+      </table>
+      <button onClick={() => onClick(fields, setMessage)}>{formName}</button>
+      <div className="message">{message}</div>
     </div>
   );
 }

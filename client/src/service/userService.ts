@@ -5,7 +5,6 @@ import IUserService from "./iServices/iUserService";
 import RegisterDto from "../dto/registerDto";
 import UserHiddenPwd from "../dto/userHiddenPwd";
 import config from "../configs/config";
-import AuthenticationResult from "../dto/authenticationResult";
 
 export interface AxiosCallbacks<RespT> {
   then?: (result: AxiosResponse<RespT>) => void,
@@ -20,8 +19,8 @@ export default class UserService implements IUserService {
       .then(callbacks?.then).catch(callbacks?.catchEx);
   }
 
-  login(email: string, password: string,callbacks?:AxiosCallbacks<AuthenticationResult>): void {
-    axios.post<AuthenticationResult>(config.backendUrl+'/api/user/authenticate',{email,password})
+  login(email: string, password: string, callbacks?: AxiosCallbacks<string>): void {
+    axios.post<string>(config.backendUrl + '/api/user/authenticate', {email, password})
       .then(callbacks?.then).catch(callbacks?.catchEx);
   }
 
