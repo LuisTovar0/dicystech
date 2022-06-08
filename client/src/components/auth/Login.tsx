@@ -21,7 +21,7 @@ export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
     service.login(infos[0], encryptedPassword,
       {
         then: r => {
-          config.accessJwt = r.data;
+          config.accessJwt = r.data as string;
           navigate('/home');
         },
         catchEx: ({response}) => {

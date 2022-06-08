@@ -1,24 +1,30 @@
 import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import js_cookie from 'js-cookie';
-import uni_cookie from 'universal-cookie';
+
+import UserService from "./service/userService";
+import config from "./configs/config";
 
 /**
- * Handles redirections according to the app state.
+ * Handles redirections according to the app's state and the user's session.
  */
 export default function Redirect() {
   const navigate = useNavigate();
   useEffect(() => {
-    console.log('universal-cookie', new uni_cookie().getAll());
-    if (js_cookie.get('refreshJwt')) {
-      console.log('habemus 🍪');
-      navigate('/home');
-    } else {
-      console.log('no 🍪');
-      console.log('js-cookie', js_cookie.get());
-      console.log('decoded document.cookie', decodeURIComponent(document.cookie));
-      navigate('/register');
-      console.log('gonna register');
+    const service = new UserService();
+    if (config.accessJwt) navigate('/home');
+    else {
+      // try to refresh token. will succeed if the user has the refreshJwt cookie
+      service.refreshToken({
+        then: r => {
+          config.accessJwt = r.data as string;
+          navigate('/home');
+        },
+        catchEx: r => {
+          console.log(r);
+          if (r.response.status === 403) alert('your session expired');
+          navigate('/register');
+        }
+      });
     }
   });
   return <p>Redirecting...</p>;

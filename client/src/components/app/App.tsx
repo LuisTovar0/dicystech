@@ -6,6 +6,7 @@ import {Login} from "../auth/Login";
 import {Register} from "../auth/Register";
 import Redirect from "../../redirect";
 import Home from "../home/Home";
+import AddLab from "../addLab/AddLab";
 
 export type Elem = JSX.Element;
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="login" element={<Login topInfoState={topLevelInfoState}/>}/>
             <Route path="register" element={<Register topInfoState={topLevelInfoState}/>}/>
             <Route path="home" element={<Home topInfoState={topLevelInfoState}/>}/>
+            <Route path="addlab" element={<AddLab topInfoState={topLevelInfoState}/>}/>
           </Route>
         </Routes>
       </BrowserRouter>

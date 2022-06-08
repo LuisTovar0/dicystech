@@ -28,8 +28,7 @@ export function Register({topInfoState}: { topInfoState: AppInfoSetter }) {
     service.register({email: infos[0], password: crypto.SHA256(password).toString()},
       {
         then: r => {
-          console.log(r);
-          config.accessJwt = r.data.accessJwt as string;
+          config.accessJwt = r.data as string;
           navigate('/');
         },
         catchEx: r => setMessage(String(r))
