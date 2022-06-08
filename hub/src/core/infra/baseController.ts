@@ -85,7 +85,7 @@ export class StaticController {
 
   public static response<T>(res: Response, code: number, content?: T | string, cookies?: { name: string, value: string }[]): Response {
     let resp = res.status(code);
-    cookies?.forEach(({name, value}) => resp = resp.cookie(name, value));
+    cookies?.forEach(({name, value}) => resp = resp.cookie(name, value, {}));
     if (content) return resp.json(content);
     else return resp.send();
   }
