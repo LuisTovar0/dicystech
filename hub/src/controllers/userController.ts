@@ -30,8 +30,8 @@ export default (app: Router) => {
         const user = await service.addUser(req.body as INoIdUserDto);
         const accessJwt = jwt.sign(user, config.api.jwt.accessSecret, config.api.jwt.signOptions);
         const refreshToken = jwt.sign(user, config.api.jwt.refreshSecret, config.api.jwt.signOptions);
-        const body = {...user, accessJwt};
-        return ctrl.response(201, body, [{name: `refreshJwt`, value: refreshToken}]);
+        // const body = {...user, accessJwt};
+        return ctrl.response(201, accessJwt, [{name: `refreshJwt`, value: refreshToken}]);
       } catch (e) {
         ctrl.handleException(e);
       }
@@ -71,6 +71,7 @@ export default (app: Router) => {
     async (req, res) => {
       const ctrlr = new BaseController(req, res);
       try {
+        console.log(req);
         let user;
         try {
           user = jwt.verify(req.cookies.refreshJwt, config.api.jwt.refreshSecret) as IUserHiddenPassword;
