@@ -1,16 +1,12 @@
 import dotenv from 'dotenv';
-import logger from "./core/loaders/logger";
-import {NamePathMap} from "./core/loaders/dependencyInjector";
 import {SignOptions} from "jsonwebtoken";
 
+import logger from "./core/loaders/logger";
+import {NamePathMap} from "./core/loaders/dependencyInjector";
+
 const env = process.env.ENV || 'development';
-if (['development', 'testing'].indexOf(env) !== -1) {
-  if (!dotenv.config())
-    throw new Error(`⚠️  Couldn't find .env file. It must be present in ${env} ⚠️`);
-} else {
-  logger.error('Invalid environment: must be production, testing or development.');
-  process.exit(1);
-}
+if (['development', 'testing'].indexOf(env) !== -1 && !dotenv.config())
+  throw new Error(`⚠️  Couldn't find .env file. It must be present in ${env} ⚠️`);
 
 const dbType = process.env.HUB_DB_TYPE;
 if (!dbType) throw `DB_TYPE environment variable must be defined`;

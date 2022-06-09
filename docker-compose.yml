@@ -5,15 +5,19 @@ services:
       dockerfile: ../Dockerfile-hub
       context: ./hub
     container_name: hub
+    env_file:
+      - .env
     ports:
-      - "${HUB_PORT:-3000}:3000"
+      - "5000:5000"
   client:
     build:
       dockerfile: ../Dockerfile-client
       context: ./client
+    env_file:
+      - .env
     container_name: client
     ports:
-      - "${CLIENT_PORT:-80}:80"
+      - "80:80"
 
   mongo:
     image: mongo:4.4.6
