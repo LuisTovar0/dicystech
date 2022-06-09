@@ -6,17 +6,17 @@ services:
       context: ./hub
     container_name: hub
     ports:
-      - "3000:3000"
+      - "${HUB_PORT:-3000}:3000"
   client:
     build:
       dockerfile: ../Dockerfile-client
       context: ./client
     container_name: client
     ports:
-      - "8000:80"
+      - "${CLIENT_PORT:-80}:80"
 
   mongo:
-    image: mongo:5
+    image: mongo:4.4.6
     container_name: mongo
     ports:
       - "27017:27017"
