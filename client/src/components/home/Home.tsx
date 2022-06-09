@@ -1,5 +1,5 @@
 import {AppInfoSetter} from "../app/App";
-import BaseComponent, {defaultButtons} from "../BaseComponent";
+import BaseComponent, {defaultButtons} from "../app/BaseComponent";
 import {useNavigate} from "react-router-dom";
 
 export default function Home({topInfoState}: { topInfoState: AppInfoSetter }) {

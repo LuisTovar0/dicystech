@@ -4,13 +4,17 @@ import crypto from "crypto-js";
 import './auth.css';
 
 import UserService from "../../service/userService";
-import AuthForm, {FieldInfo} from "./AuthForm";
+import AuthForm from "./AuthForm";
 import {AppInfoSetter} from "../app/App";
 import config from "../../configs/config";
+import {FieldInfo, fillStates} from "../app/Fields";
 
 export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
   const navigate = useNavigate();
-  const fieldNames = ['email', 'password'];
+  const fields = [
+    {name: 'E-mail',},
+    {name: 'Password', options: {password: true}}
+  ].map(fillStates);
 
   const login = (fields: FieldInfo[], setMessage: Dispatch<SetStateAction<string>>) => {
     const infos = fields.map(field => field.input[0]);
@@ -33,7 +37,7 @@ export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
   };
 
   return (
-    <AuthForm topInfoState={topInfoState} formName={'Login'} fieldNames={fieldNames}
+    <AuthForm topInfoState={topInfoState} formName={'Login'} fields={fields}
               alternativeButton={{navigate: '/register', description: 'Register instead'}} onClick={login}/>
   );
 }

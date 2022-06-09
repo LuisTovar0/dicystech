@@ -11,8 +11,9 @@
     color: black;
 }
 
-.fields input {
-    margin-left: 20px;
+.fields td {
+    padding-left: 30px;
+    text-align: left;
 }
 
 .topbar {
