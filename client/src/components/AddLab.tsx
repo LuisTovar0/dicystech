@@ -1,7 +1,6 @@
-import './addLab.css';
-import {AppInfoSetter} from "../app/App";
-import BaseComponent from "../app/BaseComponent";
-import Fields, {fillStates} from "../app/Fields";
+import {AppInfoSetter} from "./App";
+import BaseComponent from "./auxiliar/BaseComponent";
+import Fields, {fillStates} from "./auxiliar/Fields";
 
 export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) {
   const fields = [

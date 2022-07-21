@@ -42,8 +42,8 @@
     max-width: 25rem;
 }
 
-#pagename p {
-    font-size: 2rem;
+#pagename {
+    font-size: 10rem;
     text-align: center;
     margin-top: 17%;
 }

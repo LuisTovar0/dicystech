@@ -5,9 +5,9 @@ import './auth.css';
 
 import UserService from "../../service/userService";
 import AuthForm from "./AuthForm";
-import {AppInfoSetter} from "../app/App";
+import {AppInfoSetter} from "../App";
 import config from "../../configs/config";
-import {FieldInfo, fillStates} from "../app/Fields";
+import {FieldInfo, fillStates} from "../auxiliar/Fields";
 
 export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
   const navigate = useNavigate();

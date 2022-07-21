@@ -1,8 +1,8 @@
 import {useNavigate} from "react-router-dom";
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 
-import {AppInfoSetter} from "../app/App";
-import Fields, {FieldInfo} from "../app/Fields";
+import {AppInfoSetter, AppTopLevelInfo} from "../App";
+import Fields, {FieldInfo} from "../auxiliar/Fields";
 
 export interface FormProps {
   topInfoState: AppInfoSetter,
@@ -19,11 +19,11 @@ export default function AuthForm({topInfoState, formName, fields, alternativeBut
   useEffect(() => {
     const newState = {
       pageName: formName,
-      options: [
-        <button key="auth-instead" onClick={() => navigate(alternativeButton.navigate)}>
-          {alternativeButton.description}</button>
-      ]
-    };
+      options: [{
+        name: alternativeButton.description,
+        handler: () => navigate(alternativeButton.navigate)
+      }]
+    } as AppTopLevelInfo;
     const [state, setState] = topInfoState;
     if (state.pageName !== newState.pageName) setState(newState);
   });

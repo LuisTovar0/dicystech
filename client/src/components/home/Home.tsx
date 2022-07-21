@@ -1,12 +1,12 @@
-import {AppInfoSetter} from "../app/App";
-import BaseComponent, {defaultButtons} from "../app/BaseComponent";
+import {AppInfoSetter} from "../App";
+import BaseComponent, {defaultOptions} from "../auxiliar/BaseComponent";
 import {useNavigate} from "react-router-dom";
 
-export default function Home({topInfoState}: { topInfoState: AppInfoSetter }) {
+export default function Home({topInfoState}: { topInfoState: AppInfoSetter; }) {
   const navigate = useNavigate();
 
   return (<BaseComponent topInfoState={topInfoState} pageName={'Home'} options={[
-    defaultButtons.home(navigate), defaultButtons.addLab(navigate), <button>Log out</button>
+    defaultOptions.addLab(navigate), defaultOptions.logOut
   ]} elem={
     <div> You are logged in </div>
   }/>);
