@@ -1,40 +1,46 @@
 import React, {Dispatch, SetStateAction} from "react";
 import {useNavigate} from "react-router-dom";
-import crypto from "crypto-js";
-import {TextField} from "@mui/material";
+import crypto from 'crypto-js';
 
 import UserService from "../../service/userService";
 import AuthForm, {fieldInfos, onInput} from "./AuthForm";
 import {AppInfoSetter} from "../App";
 import config from "../../configs/config";
+import {TextField} from "@mui/material";
 
-export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
+export function CreateAccount({topInfoState}: { topInfoState: AppInfoSetter }) {
   const navigate = useNavigate();
-  const fields = fieldInfos(['E-mail', 'Password']);
+  const fields = fieldInfos(['E-mail', 'Password',]);
 
-  function login(setMessage: Dispatch<SetStateAction<string>>) {
+  function register(setMessage: Dispatch<SetStateAction<string>>) {
     const infos = fields.map(field => field.value);
+    console.log(infos);
 
     const password = infos[1];
-    const encryptedPassword = crypto.SHA256(password).toString();
-    const service = new UserService(); // while dependency injection isn't yet configured
-    service.login(infos[0], encryptedPassword,
+
+    // 8 characters length
+    // 2 letters in Upper Case
+    // 1 Special Character (!@#$&*)
+    // 2 numerals (0-9)
+    // 3 letters in Lower Case
+    // if (!/^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*\d.*\d)(?=.*[a-z].*[a-z].*[a-z]).{8}$/.test(password))
+    //   console.log('unsafe password')
+
+    const service = new UserService();
+    service.register({email: infos[0], password: crypto.SHA256(password).toString()},
       {
         then: r => {
           config.accessJwt = r.data as string;
-          navigate('/home');
+          navigate('/');
         },
-        catchEx: ({response}) => {
-          setMessage([404, 401].indexOf(response.status) != -1
-            ? `Those credentials don't match.`
-            : `Unexpected error: ${response.data}`);
-        }
-      });
+        catchEx: r => setMessage(String(r))
+      }
+    );
   }
 
   return (
-    <AuthForm topInfoState={topInfoState} formName={'Log In'} onClick={login}
-              alternativeOpt={{route: '/createAccount', description: 'Create Account'}}
+    <AuthForm formName={'Create Account'} topInfoState={topInfoState} onClick={register}
+              alternativeOpt={{route: '/login', description: 'Log In'}}
               form={<>
                 <TextField
                   style={{paddingTop: 10, paddingBottom: 10}}
@@ -42,7 +48,7 @@ export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
                   label="E-mail"
                   value={fields[0].value}
                   onInput={event => onInput(event, fields[0])}
-                > </TextField>
+                ></TextField>
                 <TextField
                   style={{paddingTop: 10, paddingBottom: 10}}
                   variant="filled"
@@ -51,6 +57,7 @@ export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
                   value={fields[1].value}
                   onInput={event => onInput(event, fields[1])}
                 ></TextField>
-              </>}/>
+              </>}
+    />
   );
 }

@@ -1,7 +1,5 @@
 import {styled} from "@mui/system";
 import {createTheme, Toolbar, Typography} from "@mui/material";
-import BasicMenu from "../components/auxiliar/BasicMenu";
-
 
 export const Theme = createTheme({
   palette: {
@@ -10,22 +8,18 @@ export const Theme = createTheme({
       light: "grey"
     },
     secondary: {
-      main: "#FFFFFF"
+      main: "#ffffff"
     }
   }
 });
 
-export const StyledToolbar = styled(Toolbar, {})({
+export const Navbar = styled(Toolbar)({
   display: "flex",
   justifyContent: "space-between"
 });
 
-export const PageName = styled(Typography, {})({
+export const PageName = styled(Typography)({
   fontSize: "2rem",
   // alignContent: "center"
   // marginTop: "17%"
-});
-
-export const PageOptions = styled(BasicMenu, {})({
-  alignContent: "end"
 });

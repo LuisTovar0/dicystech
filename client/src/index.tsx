@@ -4,7 +4,7 @@ import {ThemeProvider} from '@mui/material';
 
 import './index.css';
 import App from './components/App';
-import {Theme} from './styles/App';
+import {Theme} from './styles/AppStyles';
 
 // import dependencyInjector from "./configs/dependencyInjector";
 // dependencyInjector();

@@ -1,27 +1,55 @@
 import {useNavigate} from "react-router-dom";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 
-import {AppInfoSetter, AppTopLevelInfo} from "../App";
-import Fields, {FieldInfo} from "../auxiliar/Fields";
+import {AppInfoSetter, AppTopLevelInfo, Elem} from "../App";
+import Button from "@mui/material/Button";
+import {Paper, Typography} from "@mui/material";
+import {componentStyle, paperStyle} from "../../styles/AuthFormStyles";
 
 export interface FormProps {
   topInfoState: AppInfoSetter,
   formName: string,
-  fields: FieldInfo[],
-  alternativeButton: {
-    navigate: string,
+  form: Elem,
+  alternativeOpt: {
+    route: string,
     description: string,
   },
-  onClick: (fields: FieldInfo[], setMessage: Dispatch<SetStateAction<string>>) => void;
+  onClick: (setMessage: Dispatch<SetStateAction<string>>) => void;
 }
 
-export default function AuthForm({topInfoState, formName, fields, alternativeButton, onClick}: FormProps) {
+export interface FieldInfo {
+  name: string,
+  value: string,
+  setter: Dispatch<SetStateAction<string>>
+}
+
+export const onInput = (event: FormEvent<HTMLDivElement>, field: FieldInfo) =>
+  field.setter((event.target as HTMLInputElement).value);
+
+/**
+ * Due to the similarity between the CreateAccount component and the Login component, the AuthForm component exists to
+ * reduce code duplication. It will update the top-level component information (page name and navbar options) and set up
+ * the form UI and styles, which are the tasks that would be duplicated.
+ *
+ * @param topInfoState is needed to set the page name at the top-level component
+ *
+ * @param formName the form name: "Create Account" or "Log In"
+ *
+ * @param form the form content, for user inputs and such
+ *
+ * @param alternativeOpt if the user is at "Create Account", he has the option to navigate to "Log In", and vice-versa.
+ * This option is applied to the top-level component, appearing at the navbar
+ *
+ * @param onClick the function that will be called at the button click.
+ * In practice, it will be the "login" or "createAccount" function, because this is AuthForm.
+ */
+export default function AuthForm({topInfoState, formName, form, alternativeOpt, onClick}: FormProps) {
   useEffect(() => {
     const newState = {
       pageName: formName,
       options: [{
-        name: alternativeButton.description,
-        handler: () => navigate(alternativeButton.navigate)
+        name: alternativeOpt.description,
+        handler: () => navigate(alternativeOpt.route)
       }]
     } as AppTopLevelInfo;
     const [state, setState] = topInfoState;
@@ -32,11 +60,21 @@ export default function AuthForm({topInfoState, formName, fields, alternativeBut
   const [message, setMessage] = useState('');
 
   return (
-    <div className="authform">
-      <Fields fields={fields}/>
-      <button onClick={() => onClick(fields, setMessage)}>{formName}</button>
-      <div className="message">{message}</div>
+    <div style={componentStyle}>
+      <Paper style={paperStyle} elevation={3}>
+        {form}
+        <Button onClick={() => onClick(setMessage)}>{formName}</Button>
+      </Paper>
+      <Typography>{message}</Typography>
     </div>
   );
 }
 
+export function fieldInfos(names: string[]) {
+  const ret: FieldInfo[] = [];
+  for (const name in names) {
+    const [value, setter] = useState('');
+    ret.push({name, value, setter});
+  }
+  return ret;
+}

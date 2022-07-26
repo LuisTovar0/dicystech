@@ -21,7 +21,8 @@ export const defaultOptions = {
 };
 
 /**
- * A component that follows the app's usual layout.
+ * A component that follows the app's usual layout: a totally customizable body, but there's a navbar with the component
+ * name and the navigation options.
  * Requires a page name and options, that will be delivered to the top level to be included in the navbar.
  * When shown, the component will test the JWT state in order to only allow logged in users.
  */

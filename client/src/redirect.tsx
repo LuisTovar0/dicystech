@@ -22,10 +22,11 @@ export default function Redirect() {
         catchEx: r => {
           console.log(r);
           if (r.response.status === 403) alert('your session expired');
-          navigate('/register');
+          navigate('/createAccount');
         }
       });
     }
   });
-  return <p>Redirecting...</p>;
+
+  return <div style={{display: "grid", placeItems: "center"}}>Redirecting...</div>;
 }

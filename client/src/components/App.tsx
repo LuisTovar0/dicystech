@@ -1,15 +1,14 @@
 import React, {useState} from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {AppBar} from "@mui/material";
+import {AppBar, Box} from "@mui/material";
 import 'fontsource-roboto';
 
-import './App.css';
 import {Login} from "./auth/Login";
-import {Register} from "./auth/Register";
+import {CreateAccount} from "./auth/CreateAccount";
 import Redirect from "../redirect";
-import Home from "./home/Home";
+import Home from "./Home";
 import AddLab from "./AddLab";
-import {PageName, StyledToolbar} from '../styles/App';
+import {Navbar, PageName} from '../styles/AppStyles';
 import NavbarMenu from './auxiliar/NavbarMenu';
 
 export type Elem = JSX.Element;
@@ -20,6 +19,7 @@ export interface AppTopLevelInfo {
 }
 
 export interface NavBarOption {
+  icon?: Elem,
   name: string,
   handler: any
 }
@@ -31,33 +31,27 @@ function App() {
   const [{pageName, options}] = topLevelInfoState;
 
   return (<>
-    {/*<div className="topbar">*/}
-    {/*  <div id="topbar-img"><img src="logo_name.png"/></div>*/}
-    {/*  <div id="pagename"><p>{pageName}</p></div>*/}
-    {/*  <div id="options">{options}</div>*/}
-    {/*</div>*/}
     <AppBar position="static">
-      <StyledToolbar>
-        <div id="topbar-img"><img src="logo_name.png"/></div>
-        <PageName className="pagename">
-          {pageName}
-        </PageName>
+      <Navbar>
+        <Box
+          component="img" src="logo_name.png"
+          style={{maxHeight: "70%", maxWidth: "70rem"}}
+        />
+        <PageName className="pagename"> {pageName} </PageName>
         <NavbarMenu options={options}/>
-      </StyledToolbar>
+      </Navbar>
     </AppBar>
-    <div className="content">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/">
-            <Route index element={<Redirect/>}/>
-            <Route path="login" element={<Login topInfoState={topLevelInfoState}/>}/>
-            <Route path="register" element={<Register topInfoState={topLevelInfoState}/>}/>
-            <Route path="home" element={<Home topInfoState={topLevelInfoState}/>}/>
-            <Route path="addlab" element={<AddLab topInfoState={topLevelInfoState}/>}/>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/">
+          <Route index element={<Redirect/>}/>
+          <Route path="login" element={<Login topInfoState={topLevelInfoState}/>}/>
+          <Route path="createAccount" element={<CreateAccount topInfoState={topLevelInfoState}/>}/>
+          <Route path="home" element={<Home topInfoState={topLevelInfoState}/>}/>
+          <Route path="addlab" element={<AddLab topInfoState={topLevelInfoState}/>}/>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   </>);
 }
 

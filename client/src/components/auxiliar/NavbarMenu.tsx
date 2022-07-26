@@ -1,6 +1,6 @@
 import {MouseEvent, useState} from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import {IconButton, Menu, MenuItem} from "@mui/material";
+import {IconButton, Menu, MenuItem, Typography} from "@mui/material";
 
 import {NavBarOption as NavbarOption} from "../App";
 
@@ -14,7 +14,10 @@ export default function NavbarMenu({options}: { options: NavbarOption[]; }) {
     opts.map((o, i) => <MenuItem key={i} onClick={e => {
       handleClose();
       o.handler(e);
-    }}>{o.name}</MenuItem>);
+    }}>
+      {o.icon}
+      <Typography> {o.name}</Typography>
+    </MenuItem>);
 
   return (<>
     <IconButton onClick={handleClick} color="secondary">
