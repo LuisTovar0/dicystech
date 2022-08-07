@@ -4,7 +4,7 @@ import {Paper, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 
 import {AppInfoSetter, AppTopLevelInfo, Elem} from "../App";
-import {componentStyle, paperStyle} from "../../styles/authFormStyles";
+import {componentStyle, formInputStyle, paperStyle} from "../../styles/authFormStyles";
 
 export interface FormProps {
   topInfoState: AppInfoSetter,
@@ -67,7 +67,7 @@ export default function AuthForm({topInfoState, formName, form, alternativeOpt, 
     <div style={componentStyle}>
       <Paper style={paperStyle} elevation={3}>
         {form}
-        <Button onClick={() => onClick(setMessage)}>{formName}</Button>
+        <Button style={{...formInputStyle, marginTop: 20}} onClick={() => onClick(setMessage)}>{formName}</Button>
       </Paper>
       <Typography>{message}</Typography>
     </div>

@@ -1,5 +1,6 @@
 import {Dispatch, SetStateAction, useState} from "react";
 import {
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -8,7 +9,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField
+  TextField,
+  Typography
 } from "@mui/material";
 
 import {AppInfoSetter} from "./App";
@@ -48,12 +50,18 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
     labSchema: {name: 'Lab Schema (optional)', value: states[4][0], setter: states[4][1]}
   } as AddLabFieldInfoMap;
 
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const nameError = fields.name.value.trim() === '';
+  const countryError = fields.country.value.trim() === '';
+  console.log(attemptedSubmit, nameError, countryError, attemptedSubmit && (!nameError || !countryError));
+
   return (<BaseComponent elem={
     <div style={addLabStyle}>
       <div style={addLabFormStyle}>
         <TextField
           style={formInputStyle}
           variant="filled"
+          required error={nameError && attemptedSubmit}
           label={fields.name.name}
           onChange={e => fields.name.setter(e.target.value)}
           value={fields.name.value}
@@ -67,7 +75,8 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
           value={fields.labHash.value}
         />
 
-        <FormControl required style={{...formInputStyle, maxWidth: "50%", minWidth: 250}}>
+        <FormControl required error={countryError && attemptedSubmit}
+                     style={{...formInputStyle, maxWidth: "50%", minWidth: 250}}>
           <InputLabel>Country</InputLabel>
           <Select label="Country" value={fields.country.value}
                   onChange={e => fields.country.setter(e.target.value as string)}>
@@ -88,6 +97,16 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
                               }} checked={componentsValue.includes(componentName)}/>}
             />)} </FormGroup>
         </FormControl>
+
+        <div style={{display: 'flex', height: 60, alignItems: 'center'}}>
+          <Button variant="contained" style={{...formInputStyle, width: 120}}
+                  onClick={e => {
+                    setAttemptedSubmit(true);
+                  }}> Add Lab </Button>
+          {attemptedSubmit && (nameError || countryError)
+            ? <Typography style={{marginLeft: 30}} color="error">Please fill out the required fields</Typography>
+            : null}
+        </div>
       </div>
     </div>} topInfoState={topInfoState} pageName="Add Lab"/>);
 }

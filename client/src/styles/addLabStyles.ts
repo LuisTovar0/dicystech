@@ -8,8 +8,8 @@ export const addLabStyle: CSSProperties = {
 };
 
 export const addLabFormStyle: CSSProperties = {
-  width: "80%",
+  width: "75%",
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
+  // justifyContent: "center",
 };

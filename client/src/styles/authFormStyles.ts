@@ -7,7 +7,7 @@ export const componentStyle: CSSProperties = {
 };
 
 export const paperStyle: CSSProperties = {
-  height: 310,
+  height: 260,
   width: 300,
   display: "flex",
   flexDirection: "column",
