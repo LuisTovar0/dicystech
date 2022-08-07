@@ -1,10 +1,10 @@
 import {useNavigate} from "react-router-dom";
 import {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
+import {Paper, Typography} from "@mui/material";
+import Button from "@mui/material/Button";
 
 import {AppInfoSetter, AppTopLevelInfo, Elem} from "../App";
-import Button from "@mui/material/Button";
-import {Paper, Typography} from "@mui/material";
-import {componentStyle, paperStyle} from "../../styles/AuthFormStyles";
+import {componentStyle, paperStyle} from "../../styles/authFormStyles";
 
 export interface FormProps {
   topInfoState: AppInfoSetter,
@@ -21,6 +21,10 @@ export interface FieldInfo {
   name: string,
   value: string,
   setter: Dispatch<SetStateAction<string>>
+}
+
+export interface FieldInfoMap {
+  [k: string]: FieldInfo;
 }
 
 export const onInput = (event: FormEvent<HTMLDivElement>, field: FieldInfo) =>
@@ -70,11 +74,11 @@ export default function AuthForm({topInfoState, formName, form, alternativeOpt, 
   );
 }
 
-export function fieldInfos(names: string[]) {
-  const ret: FieldInfo[] = [];
-  for (const name in names) {
+export function fieldInfos(names: { [a: string]: string }): FieldInfoMap {
+  const ret: FieldInfoMap = {};
+  Object.entries(names).forEach(([k, v]) => {
     const [value, setter] = useState('');
-    ret.push({name, value, setter});
-  }
+    ret[k] = {name: v, value, setter};
+  });
   return ret;
 }

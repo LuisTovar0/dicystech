@@ -7,16 +7,18 @@ import AuthForm, {fieldInfos, onInput} from "./AuthForm";
 import {AppInfoSetter} from "../App";
 import config from "../../configs/config";
 import {TextField} from "@mui/material";
+import {formInputStyle} from "../../styles/authFormStyles";
+import {LoginFieldInfoMap} from "./Login";
+
+interface CreateAccountFieldInfoMap extends LoginFieldInfoMap {
+}
 
 export function CreateAccount({topInfoState}: { topInfoState: AppInfoSetter }) {
   const navigate = useNavigate();
-  const fields = fieldInfos(['E-mail', 'Password',]);
+  const fields = fieldInfos({email: 'E-mail', password: 'Password'}) as unknown as CreateAccountFieldInfoMap;
 
   function register(setMessage: Dispatch<SetStateAction<string>>) {
-    const infos = fields.map(field => field.value);
-    console.log(infos);
-
-    const password = infos[1];
+    const password = fields.password.value;
 
     // 8 characters length
     // 2 letters in Upper Case
@@ -27,7 +29,7 @@ export function CreateAccount({topInfoState}: { topInfoState: AppInfoSetter }) {
     //   console.log('unsafe password')
 
     const service = new UserService();
-    service.register({email: infos[0], password: crypto.SHA256(password).toString()},
+    service.register({email: fields.email.value, password: crypto.SHA256(password).toString()},
       {
         then: r => {
           config.accessJwt = r.data as string;
@@ -43,19 +45,19 @@ export function CreateAccount({topInfoState}: { topInfoState: AppInfoSetter }) {
               alternativeOpt={{route: '/login', description: 'Log In'}}
               form={<>
                 <TextField
-                  style={{paddingTop: 10, paddingBottom: 10}}
-                  variant="filled"
+                  style={formInputStyle}
+                  variant="standard"
                   label="E-mail"
-                  value={fields[0].value}
-                  onInput={event => onInput(event, fields[0])}
+                  value={fields.email.value}
+                  onInput={event => onInput(event, fields.email)}
                 ></TextField>
                 <TextField
-                  style={{paddingTop: 10, paddingBottom: 10}}
-                  variant="filled"
+                  style={formInputStyle}
+                  variant="standard"
                   label="Password"
                   type="password"
-                  value={fields[1].value}
-                  onInput={event => onInput(event, fields[1])}
+                  value={fields.password.value}
+                  onInput={event => onInput(event, fields.password)}
                 ></TextField>
               </>}
     />

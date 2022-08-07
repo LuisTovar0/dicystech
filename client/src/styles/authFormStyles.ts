@@ -16,3 +16,8 @@ export const paperStyle: CSSProperties = {
   margin: 50,
   borderRadius: 20
 };
+
+export const formInputStyle: CSSProperties = {
+  marginTop: 10,
+  marginBottom: 10
+};

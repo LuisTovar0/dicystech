@@ -4,21 +4,25 @@ import crypto from "crypto-js";
 import {TextField} from "@mui/material";
 
 import UserService from "../../service/userService";
-import AuthForm, {fieldInfos, onInput} from "./AuthForm";
+import AuthForm, {FieldInfo, fieldInfos, onInput} from "./AuthForm";
 import {AppInfoSetter} from "../App";
 import config from "../../configs/config";
+import {formInputStyle} from "../../styles/authFormStyles";
+
+export interface LoginFieldInfoMap {
+  email: FieldInfo,
+  password: FieldInfo
+}
 
 export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
   const navigate = useNavigate();
-  const fields = fieldInfos(['E-mail', 'Password']);
+  const fields = fieldInfos({email: 'E-mail', password: 'Password'}) as unknown as LoginFieldInfoMap;
 
   function login(setMessage: Dispatch<SetStateAction<string>>) {
-    const infos = fields.map(field => field.value);
-
-    const password = infos[1];
+    const password = fields.password.value;
     const encryptedPassword = crypto.SHA256(password).toString();
     const service = new UserService(); // while dependency injection isn't yet configured
-    service.login(infos[0], encryptedPassword,
+    service.login(fields.email.value, encryptedPassword,
       {
         then: r => {
           config.accessJwt = r.data as string;
@@ -37,20 +41,20 @@ export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
               alternativeOpt={{route: '/createAccount', description: 'Create Account'}}
               form={<>
                 <TextField
-                  style={{paddingTop: 10, paddingBottom: 10}}
-                  variant="filled"
+                  style={formInputStyle}
+                  variant="standard"
                   label="E-mail"
-                  value={fields[0].value}
-                  onInput={event => onInput(event, fields[0])}
-                > </TextField>
+                  value={fields.email.value}
+                  onInput={event => onInput(event, fields.email)}
+                />
                 <TextField
-                  style={{paddingTop: 10, paddingBottom: 10}}
-                  variant="filled"
+                  style={formInputStyle}
+                  variant="standard"
                   label="Password"
                   type="password"
-                  value={fields[1].value}
-                  onInput={event => onInput(event, fields[1])}
-                ></TextField>
+                  value={fields.password.value}
+                  onInput={event => onInput(event, fields.password)}
+                />
               </>}/>
   );
 }

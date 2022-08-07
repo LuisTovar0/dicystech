@@ -8,7 +8,7 @@ import {CreateAccount} from "./auth/CreateAccount";
 import Redirect from "../redirect";
 import Home from "./Home";
 import AddLab from "./AddLab";
-import {Navbar, PageName} from '../styles/AppStyles';
+import {Navbar, PageName} from '../styles/appStyles';
 import NavbarMenu from './auxiliar/NavbarMenu';
 
 export type Elem = JSX.Element;
