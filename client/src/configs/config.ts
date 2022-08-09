@@ -6,6 +6,13 @@ const config = {
 
   accessJwt: undefined as string | undefined,
 
+  routes: {
+    login: 'login',
+    createAccount: 'createaccount',
+    home: 'home',
+    addLab: 'addlab'
+  },
+
   deps: {
     services: {
       user: {

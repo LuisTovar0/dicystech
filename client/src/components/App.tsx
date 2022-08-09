@@ -3,13 +3,14 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AppBar, Box} from "@mui/material";
 import 'fontsource-roboto';
 
-import {Login} from "./auth/Login";
+import config from "../configs/config";
 import {CreateAccount} from "./auth/CreateAccount";
 import Redirect from "../redirect";
-import Home from "./Home";
-import AddLab from "./AddLab";
 import {Navbar, PageName} from '../styles/appStyles';
 import NavbarMenu from './auxiliar/NavbarMenu';
+import {Login} from "./auth/Login";
+import Home from "./Home";
+import AddLab from "./AddLab";
 
 export type Elem = JSX.Element;
 
@@ -45,10 +46,10 @@ function App() {
       <Routes>
         <Route path="/">
           <Route index element={<Redirect/>}/>
-          <Route path="login" element={<Login topInfoState={topLevelInfoState}/>}/>
-          <Route path="createAccount" element={<CreateAccount topInfoState={topLevelInfoState}/>}/>
-          <Route path="home" element={<Home topInfoState={topLevelInfoState}/>}/>
-          <Route path="addlab" element={<AddLab topInfoState={topLevelInfoState}/>}/>
+          <Route path={config.routes.login} element={<Login topInfoState={topLevelInfoState}/>}/>
+          <Route path={config.routes.createAccount} element={<CreateAccount topInfoState={topLevelInfoState}/>}/>
+          <Route path={config.routes.home} element={<Home topInfoState={topLevelInfoState}/>}/>
+          <Route path={config.routes.addLab} element={<AddLab topInfoState={topLevelInfoState}/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -12,8 +12,8 @@ export interface BaseComponentProps {
 }
 
 export const defaultOptions = {
-  home: (navigate: NavigateFunction) => ({handler: () => navigate('/home'), name: "Home Page"}),
-  addLab: (navigate: NavigateFunction) => ({handler: () => navigate('/addlab'), name: "Add Lab"}),
+  home: (navigate: NavigateFunction) => ({handler: () => navigate('/' + config.routes.home), name: "Home Page"}),
+  addLab: (navigate: NavigateFunction) => ({handler: () => navigate('/' + config.routes.addLab), name: "Add Lab"}),
   logOut: {
     name: "Log Out", handler: () => {
     }

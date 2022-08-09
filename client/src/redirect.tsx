@@ -11,22 +11,22 @@ export default function Redirect() {
   const navigate = useNavigate();
   useEffect(() => {
     const service = new UserService();
-    if (config.accessJwt) navigate('/home');
+    if (config.accessJwt) navigate('/' + config.routes.home);
     else {
       // try to refresh token. will succeed if the user has the refreshJwt cookie
       service.refreshToken({
         then: r => {
           config.accessJwt = r.data as string;
-          navigate('/home');
+          navigate('/' + config.routes.home);
         },
         catchEx: r => {
           console.log(r);
           if (r.response.status === 403) alert('your session expired');
-          navigate('/createAccount');
+          navigate('/' + config.routes.createAccount);
         }
       });
     }
   });
 
-  return <div style={{display: "grid", placeItems: "center"}}>Redirecting...</div>;
+  return <div style={{display: "grid", placeItems: "center", minHeight: '70vh'}}>Redirecting...</div>;
 }

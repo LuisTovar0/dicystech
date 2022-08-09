@@ -26,7 +26,7 @@ export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
       {
         then: r => {
           config.accessJwt = r.data as string;
-          navigate('/home');
+          navigate('/' + config.routes.home);
         },
         catchEx: ({response}) => {
           setMessage([404, 401].indexOf(response.status) != -1

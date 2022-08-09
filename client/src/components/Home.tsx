@@ -8,6 +8,6 @@ export default function Home({topInfoState}: { topInfoState: AppInfoSetter; }) {
   return (<BaseComponent topInfoState={topInfoState} pageName={'Home'} options={[
     defaultOptions.addLab(navigate), defaultOptions.logOut
   ]} elem={
-    <div style={{display: "grid", placeItems: "center"}}> You are logged in </div>
+    <div style={{display: "grid", placeItems: "center", minHeight: '70vh'}}> You are logged in </div>
   }/>);
 }
