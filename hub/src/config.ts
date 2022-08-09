@@ -38,6 +38,10 @@ switch (dbType) {
         user: {
           name: 'MongoUserRepo',
           path: '../../db/repos/mongo/userRepo'
+        },
+        lab: {
+          name: 'MongoLabRepo',
+          path: '../../db/repos/mongo/labRepo'
         }
       }
     } as MongoConfig;
@@ -66,12 +70,20 @@ export default {
       user: {
         name: 'UserService',
         path: '../../services/userService'
+      },
+      lab: {
+        name: 'LabService',
+        path: '../../services/labService'
       }
     } as NamePathMap,
     mappers: {
       user: {
         name: 'UserMapper',
         path: '../../mappers/userMapper'
+      },
+      lab: {
+        name: 'LabMapper',
+        path: '../../mappers/labMapper'
       }
     } as NamePathMap
   }

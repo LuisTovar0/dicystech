@@ -1,16 +1,21 @@
 import {NextFunction, Request, Response, Router} from 'express';
-import debug from './debugController';
-import user from './userController';
-import {StaticController} from "../core/infra/baseController";
 import jwt from "jsonwebtoken";
+
 import config from "../config";
+import {StaticController} from "../core/infra/baseController";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";
+import debug from './debugController';
+import conf from "./configController";
+import user from './userController';
+import lab from './labController';
 
 export default () => {
   const router = Router();
 
   debug(router);
+  conf(router);
   user(router);
+  lab(router);
 
   return router;
 }

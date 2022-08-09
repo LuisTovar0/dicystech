@@ -28,9 +28,9 @@ export default (app: Router) => {
       const ctrl = new BaseController(req, res);
       try {
         const user = await service.addUser(req.body as INoIdUserDto);
+        // log in
         const accessJwt = jwt.sign(user, config.api.jwt.accessSecret, config.api.jwt.signOptions);
         const refreshToken = jwt.sign(user, config.api.jwt.refreshSecret, config.api.jwt.signOptions);
-        // const body = {...user, accessJwt};
         return ctrl.response(201, accessJwt, [{name: `refreshJwt`, value: refreshToken}]);
       } catch (e) {
         ctrl.handleException(e);

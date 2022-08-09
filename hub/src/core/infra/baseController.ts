@@ -62,16 +62,6 @@ export class BaseController {
 
 export class StaticController {
 
-  public static async simpleController<T1>(resp: Response, call: () => T1,
-                                           retCode: (resp: Response, content?: T1 | string) => Response) {
-    try {
-      const res = await call();
-      return retCode(resp, res);
-    } catch (e) {
-      return StaticController.handleException(resp, e);
-    }
-  }
-
   public static handleException(res: Response, e: Error) {
     if (e instanceof NotFoundError)
       return StaticController.notFound(res, e.message);
