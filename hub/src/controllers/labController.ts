@@ -6,7 +6,7 @@ import ILabService from "../services/iServices/iLabService";
 import config from "../config";
 import INoIdLabDto from "../dto/iNoIdDto/iNoIdLabDto";
 
-const {created} = StaticController;
+const {k, created, handleException} = StaticController;
 
 const route = Router();
 
@@ -30,9 +30,58 @@ export default (app: Router) => {
         const result = await service.addLab(req.body as INoIdLabDto);
         return created(res, result);
       } catch (e) {
-        return StaticController.handleException(res, e);
+        return handleException(res, e);
       }
     }
   );
+
+  route.get('',
+    async (req, res) => {
+      try {
+        const result = await service.getAllLabs();
+        return k(res, result);
+      } catch (e) {
+        return handleException(res, e);
+      }
+    });
+
+  route.get('/byname',
+    celebrate({
+      query: {name: Joi.string().required()}
+    }),
+    async (req, res) => {
+      try {
+        const result = await service.getLabByName(req.query.name as string);
+        return k(res, result);
+      } catch (e) {
+        return handleException(res, e);
+      }
+    });
+
+  route.get('/bycountry',
+    celebrate({
+      query: {country: Joi.string().required()}
+    }),
+    async (req, res) => {
+      try {
+        const result = await service.getLabsByCountry(req.query.country as string);
+        return k(res, result);
+      } catch (e) {
+        return handleException(res, e);
+      }
+    });
+
+  route.post('/getbycomponents',
+    celebrate({
+      body: Joi.array()
+    }),
+    async (req, res) => {
+      try {
+        const result = await service.getLabsByComponents(req.body as string[]);
+        return k(res, result);
+      } catch (e) {
+        return handleException(res, e);
+      }
+    });
 
 }

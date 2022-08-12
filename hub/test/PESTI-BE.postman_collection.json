@@ -84,14 +84,14 @@
             "method": "POST",
             "header": [],
             "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"email\":\"any\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
+				"mode": "raw",
+				"raw": "{\r\n    \"email\": \"any\"\r\n}",
+				"options": {
+					"raw": {
+						"language": "json"
+					}
+				}
+			},
             "url": {
               "raw": "{{be}}/api/user",
               "host": [
@@ -608,11 +608,12 @@
                   "listen": "prerequest",
                   "script": {
                     "exec": [
-                      "\r",
-                      "const name = Array.from(Array(10), () => Math.floor(Math.random() * 36).toString(36)).join('');\r",
-                      "pm.environment.set(\"lab_name1\", name);\r",
-                      ""
-                    ],
+						"\r",
+						"const name = Array.from(Array(10), () => Math.floor(Math.random() * 36).toString(36)).join('');\r",
+						"pm.environment.set(\"lab_name1\", name);\r",
+						"pm.environment.set(\"lab_country1\", \"Greece\")\r",
+						""
+					],
                     "type": "text/javascript"
                   }
                 }
@@ -621,30 +622,363 @@
                 "method": "POST",
                 "header": [],
                 "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n    \"name\": \"{{lab_name1}}\",\r\n    \"country\": \"Greece\",\r\n    \"components\":[\"LED\", \"Light Sensor\"]\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"{{lab_name1}}\",\r\n    \"country\": \"{{lab_country1}}\",\r\n    \"components\":[\"LED\", \"Light Sensor\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
                 "url": {
                   "raw": "{{be}}/api/lab",
                   "host": [
-                    "{{be}}"
-                  ],
-                  "path": [
-                    "api",
-                    "lab"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        }
-      ]
+					  "{{be}}"
+				  ],
+					"path": [
+						"api",
+						"lab"
+					]
+				}
+			  },
+				"response": []
+			}
+		  ]
+		},
+		  {
+			  "name": "getters",
+			  "item": [
+				  {
+					  "name": "Get all labs",
+					  "event": [
+						  {
+							  "listen": "test",
+							  "script": {
+								  "exec": [
+									  "\r",
+									  "pm.test(`Response status is OK`, () => pm.response.to.have.status(200));\r",
+									  "\r",
+									  "const jsonResp = pm.response.json();\r",
+									  "\r",
+									  "pm.test('Added Lab exists', () => {\r",
+									  "    const name = pm.environment.get('lab_name1');\r",
+									  "    const res = jsonResp.findIndex(lab => lab.name === name);\r",
+									  "    pm.expect(res).to.not.eql(-1);\r",
+									  "});\r",
+									  ""
+								  ],
+								  "type": "text/javascript"
+							  }
+						  }
+					  ],
+					  "request": {
+						  "method": "GET",
+						  "header": [],
+						  "url": {
+							  "raw": "{{be}}/api/lab",
+							  "host": [
+								  "{{be}}"
+							  ],
+							  "path": [
+								  "api",
+								  "lab"
+							  ]
+						  }
+					  },
+					  "response": []
+				  },
+				  {
+					  "name": "Get Lab by name 200",
+					  "event": [
+						  {
+							  "listen": "test",
+							  "script": {
+								  "exec": [
+									  "pm.test('Response status is OK', () => pm.response.to.have.status(200))\r",
+									  "\r",
+									  "const jsonResp = pm.response.json();\r",
+									  "\r",
+									  "pm.test('Response name is correct', () => pm.expect(jsonResp.name).to.eql(pm.environment.get('lab_name1')));\r",
+									  "\r",
+									  "pm.test('Response country is correct', () => pm.expect(jsonResp.country).to.eql(pm.environment.get('lab_country1')));\r",
+									  "\r",
+									  "pm.test('Response components are correct', () => pm.expect(jsonResp.components).to.eql([\"LED\", \"Light Sensor\"]));\r",
+									  ""
+								  ],
+								  "type": "text/javascript"
+							  }
+						  }
+					  ],
+					  "request": {
+						  "method": "GET",
+						  "header": [],
+						  "url": {
+							  "raw": "{{be}}/api/lab/byname?name={{lab_name1}}",
+							  "host": [
+								  "{{be}}"
+							  ],
+							  "path": [
+								  "api",
+								  "lab",
+								  "byname"
+							  ],
+							  "query": [
+								  {
+									  "key": "name",
+									  "value": "{{lab_name1}}"
+								  }
+							  ]
+						  }
+					  },
+					  "response": []
+				  },
+				  {
+					  "name": "Get Lab by name 404",
+					  "event": [
+						  {
+							  "listen": "test",
+							  "script": {
+								  "exec": [
+									  "pm.test('Response status is Not Found', () => pm.response.to.have.status(404));\r",
+									  ""
+								  ],
+								  "type": "text/javascript"
+							  }
+						  }
+					  ],
+					  "request": {
+						  "method": "GET",
+						  "header": [],
+						  "url": {
+							  "raw": "{{be}}/api/lab/byname?name=abc123",
+							  "host": [
+								  "{{be}}"
+							  ],
+							  "path": [
+								  "api",
+								  "lab",
+								  "byname"
+							  ],
+							  "query": [
+								  {
+									  "key": "name",
+									  "value": "abc123"
+								  }
+							  ]
+						  }
+					  },
+					  "response": []
+				  },
+				  {
+					  "name": "Get Lab by name 400",
+					  "event": [
+						  {
+							  "listen": "test",
+							  "script": {
+								  "exec": [
+									  "pm.test('Response status is Bad Request', () => pm.response.to.have.status(400));\r",
+									  ""
+								  ],
+								  "type": "text/javascript"
+							  }
+						  }
+					  ],
+					  "request": {
+						  "method": "GET",
+						  "header": [],
+						  "url": {
+							  "raw": "{{be}}/api/lab/byname?hello=world",
+							  "host": [
+								  "{{be}}"
+							  ],
+							  "path": [
+								  "api",
+								  "lab",
+								  "byname"
+							  ],
+							  "query": [
+								  {
+									  "key": "hello",
+									  "value": "world"
+								  }
+							  ]
+						  }
+					  },
+					  "response": []
+				  },
+				  {
+					  "name": "Get Labs by country 200",
+					  "event": [
+						  {
+							  "listen": "test",
+							  "script": {
+								  "exec": [
+									  "pm.test('Response status is OK', () => pm.response.to.have.status(200))\r",
+									  "\r",
+									  "const jsonResp = pm.response.json();\r",
+									  "\r",
+									  "pm.test('Response is a list and contains the added Lab', () => {\r",
+									  "    const name = pm.environment.get('lab_name1');\r",
+									  "    const res = jsonResp.findIndex(lab => lab.name === name);\r",
+									  "    pm.expect(res).to.not.eql(-1);\r",
+									  "});\r",
+									  ""
+								  ],
+								  "type": "text/javascript"
+							  }
+						  }
+					  ],
+					  "request": {
+						  "method": "GET",
+						  "header": [],
+						  "url": {
+							  "raw": "{{be}}/api/lab/bycountry?country={{lab_country1}}",
+							  "host": [
+								  "{{be}}"
+							  ],
+							  "path": [
+								  "api",
+								  "lab",
+								  "bycountry"
+							  ],
+							  "query": [
+								  {
+									  "key": "country",
+									  "value": "{{lab_country1}}"
+								  }
+							  ]
+						  }
+					  },
+					  "response": []
+				  },
+				  {
+					  "name": "Get Labs by country 400",
+					  "event": [
+						  {
+							  "listen": "test",
+							  "script": {
+								  "exec": [
+									  "pm.test('Response status is Bad Request', () => pm.response.to.have.status(400));\r",
+									  ""
+								  ],
+								  "type": "text/javascript"
+							  }
+						  }
+					  ],
+					  "request": {
+						  "method": "GET",
+						  "header": [],
+						  "url": {
+							  "raw": "{{be}}/api/lab/bycountry?country=abc123",
+							  "host": [
+								  "{{be}}"
+							  ],
+							  "path": [
+								  "api",
+								  "lab",
+								  "bycountry"
+							  ],
+							  "query": [
+								  {
+									  "key": "country",
+									  "value": "abc123"
+								  }
+							  ]
+						  }
+					  },
+					  "response": []
+				  },
+				  {
+					  "name": "Get Labs by components 200",
+					  "event": [
+						  {
+							  "listen": "test",
+							  "script": {
+								  "exec": [
+									  "pm.test('Response status is OK', () => pm.response.to.have.status(200))\r",
+									  "\r",
+									  "const jsonResp = pm.response.json();\r",
+									  "\r",
+									  "pm.test('Response is a list and contains the added Lab', () => {\r",
+									  "    const name = pm.environment.get('lab_name1');\r",
+									  "    const res = jsonResp.findIndex(lab => lab.name === name);\r",
+									  "    pm.expect(res).to.not.eql(-1);\r",
+									  "});\r",
+									  ""
+								  ],
+								  "type": "text/javascript"
+							  }
+						  }
+					  ],
+					  "request": {
+						  "method": "POST",
+						  "header": [],
+						  "body": {
+							  "mode": "raw",
+							  "raw": "[\"LED\", \"Light Sensor\"]",
+							  "options": {
+								  "raw": {
+									  "language": "json"
+								  }
+							  }
+						  },
+						  "url": {
+							  "raw": "{{be}}/api/lab/getbycomponents",
+							  "host": [
+								  "{{be}}"
+							  ],
+							  "path": [
+								  "api",
+								  "lab",
+								  "getbycomponents"
+							  ]
+						  }
+					  },
+					  "response": []
+				  },
+				  {
+					  "name": "Get Labs by components 400",
+					  "event": [
+						  {
+							  "listen": "test",
+							  "script": {
+								  "exec": [
+									  "pm.test('Response status is Bad Request', () => pm.response.to.have.status(400));\r",
+									  ""
+								  ],
+								  "type": "text/javascript"
+							  }
+						  }
+					  ],
+					  "request": {
+						  "method": "POST",
+						  "header": [],
+						  "body": {
+							  "mode": "raw",
+							  "raw": "[\r\n    \"Strange Component\"\r\n]",
+							  "options": {
+								  "raw": {
+									  "language": "json"
+								  }
+							  }
+						  },
+						  "url": {
+							  "raw": "{{be}}/api/lab/getbycomponents",
+							  "host": [
+								  "{{be}}"
+							  ],
+							  "path": [
+								  "api",
+								  "lab",
+								  "getbycomponents"
+							  ]
+						  }
+					  },
+					  "response": []
+				  }
+			  ]
+		  }
+	  ]
     }
   ]
 }

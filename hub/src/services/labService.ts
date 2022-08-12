@@ -31,7 +31,7 @@ export default class LabService implements ILabService {
   async getLabByName(name: string): Promise<ILabDto> {
     const lab = await this.repo.getByName(name);
     if (lab === null)
-      throw new NotFoundError(`Lab with name ${name} does not exist.`);
+      throw new NotFoundError(`Lab with name "${name}" does not exist.`);
     return lab;
   }
 
