@@ -1,12 +1,15 @@
 import {Inject, Service} from "typedi";
-import ILabService from "./iServices/iLabService";
+
 import config from "../config";
+import ILabService from "./iServices/iLabService";
 import ILabRepo from "../db/repos/iRepos/iLabRepo";
 import ILabMapper from "../mappers/iMappers/iLabMapper";
 import ILabDto from "../dto/iLabDto";
 import INoIdLabDto from "../dto/iNoIdDto/iNoIdLabDto";
-import Lab from "../domain/lab/lab";
 import {NotFoundError} from "../core/logic/errors";
+import Lab from "../domain/lab/lab";
+import LabCountry from "../domain/lab/labCountry";
+import LabComponents from "../domain/lab/labComponents";
 
 @Service()
 export default class LabService implements ILabService {
@@ -37,10 +40,12 @@ export default class LabService implements ILabService {
   }
 
   async getLabsByComponents(components: string[]): Promise<ILabDto[]> {
+    LabComponents.create(components);
     return await this.repo.getLabsByComponents(components);
   }
 
   async getLabsByCountry(country: string): Promise<ILabDto[]> {
+    LabCountry.create(country);
     return await this.repo.getLabsByCountry(country);
   }
 
