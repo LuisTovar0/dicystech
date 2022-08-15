@@ -1,4 +1,5 @@
 import {ValueObject} from "../../core/domain/valueObject";
+import {ValidationError} from "../../core/logic/errors";
 
 interface LabNameProps {
   value: string;
@@ -11,6 +12,8 @@ export default class LabName extends ValueObject<LabNameProps> {
   }
 
   public static create(name: string): LabName {
+    if (name.includes('/'))
+      throw new ValidationError(`The Lab name has an invalid character: "/"`)
     return new LabName({value: name});
   }
 

@@ -18,6 +18,8 @@ import BaseComponent from "./auxiliar/BaseComponent";
 import {formInputStyle} from "../styles/authFormStyles";
 import {addLabFormStyle, addLabStyle} from "../styles/addLabStyles";
 import ConfigService from "../service/configService";
+import LabService from "../service/labService";
+import INoIdLabDto from "../dto/lab/iNoIdLabDto";
 
 interface AddLabFieldInfoMap {
   name: AddLabField<string>;
@@ -59,10 +61,11 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
   } as AddLabFieldInfoMap;
 
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
-  const nameError = fields.name.value.trim() === '';
+  const nameError = fields.name.value.trim() === '' || !/[\ -'0-9a-zÀ-ÿA-Z.,]+/.test(fields.name.value);
   const countryError = fields.country.value.trim() === '';
+  const error = attemptedSubmit && (nameError || countryError);
 
-  return (<BaseComponent elem={
+  return <BaseComponent elem={
     <div style={addLabStyle}>
       <div style={addLabFormStyle}>
         <TextField
@@ -72,6 +75,7 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
           label={fields.name.name}
           onChange={e => fields.name.setter(e.target.value)}
           value={fields.name.value}
+          helperText="An alphanumeric name. Accented characters and -'., are allowed."
         />
 
         <TextField
@@ -107,13 +111,26 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
 
         <div style={{display: 'flex', height: 60, alignItems: 'center'}}>
           <Button variant="contained" style={{...formInputStyle, width: 120}}
-                  onClick={e => {
+                  onClick={() => {
                     setAttemptedSubmit(true);
+                    if (nameError || countryError) return;
+
+                    const dto: INoIdLabDto = {
+                      name: fields.name.value,
+                      country: fields.country.value,
+                      components: fields.components.value
+                    };
+                    const service = new LabService();
+                    service.addLab(dto, {
+                      then: r => { // todo
+                        console.log('success', r.data);
+                      }
+                    });
                   }}> Add Lab </Button>
-          {attemptedSubmit && (nameError || countryError)
+          {error
             ? <Typography style={{marginLeft: 30}} color="error">Please fill out the required fields</Typography>
             : null}
         </div>
       </div>
-    </div>} topInfoState={topInfoState} pageName="Add Lab"/>);
+    </div>} topInfoState={topInfoState} pageName="Add Lab"/>;
 }

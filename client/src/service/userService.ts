@@ -2,7 +2,7 @@ import axios, {AxiosResponse} from 'axios';
 import {Service} from 'typedi';
 
 import IUserService from "./iServices/iUserService";
-import RegisterDto from "../dto/registerDto";
+import CreateAccountDto from "../dto/user/createAccountDto";
 import config from "../configs/config";
 
 export interface AxiosCallbacks<RespT> {
@@ -13,18 +13,20 @@ export interface AxiosCallbacks<RespT> {
 @Service()
 export default class UserService implements IUserService {
 
-  register(info: RegisterDto, callbacks?: AxiosCallbacks<string>): void {
-    axios.post<string>(config.backendUrl + '/api/user', info)
+  static readonly baseUrl = `/api/user`;
+
+  register(info: CreateAccountDto, callbacks?: AxiosCallbacks<string>): void {
+    axios.post<string>(config.backendUrl + UserService.baseUrl, info)
       .then(callbacks?.then).catch(callbacks?.catchEx);
   }
 
   login(email: string, password: string, callbacks?: AxiosCallbacks<string>): void {
-    axios.post<string>(config.backendUrl + '/api/user/authenticate', {email, password})
+    axios.post<string>(`${config.backendUrl + UserService.baseUrl}/authenticate`, {email, password})
       .then(callbacks?.then).catch(callbacks?.catchEx);
   }
 
   refreshToken(callbacks?: AxiosCallbacks<string>): void {
-    axios.get<string>(config.backendUrl + '/api/user/refreshToken')
+    axios.get<string>(`${config.backendUrl + UserService.baseUrl}/refreshToken`)
       .then(callbacks?.then).catch(callbacks?.catchEx);
   }
 
