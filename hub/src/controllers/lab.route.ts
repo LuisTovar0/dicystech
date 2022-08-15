@@ -45,26 +45,26 @@ export default (app: Router) => {
       }
     });
 
-  route.get('/byname',
+  route.get('/:name',
     celebrate({
-      query: {name: Joi.string().required()}
+      params: {name: Joi.string().required()}
     }),
     async (req, res) => {
       try {
-        const result = await service.getLabByName(req.query.name as string);
+        const result = await service.getLabByName(req.params.name as string);
         return k(res, result);
       } catch (e) {
         return handleException(res, e);
       }
     });
 
-  route.get('/bycountry',
+  route.get('/bycountry/:country',
     celebrate({
-      query: {country: Joi.string().required()}
+      params: {country: Joi.string().required()}
     }),
     async (req, res) => {
       try {
-        const result = await service.getLabsByCountry(req.query.country as string);
+        const result = await service.getLabsByCountry(req.params.country as string);
         return k(res, result);
       } catch (e) {
         return handleException(res, e);

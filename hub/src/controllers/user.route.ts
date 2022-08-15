@@ -62,7 +62,7 @@ export default (app: Router) => {
     }
   );
 
-  route.get('/refreshToken',
+  route.get('/refreshtoken',
     celebrate({
       cookies: {
         refreshJwt: Joi.string().required()
@@ -71,7 +71,6 @@ export default (app: Router) => {
     async (req, res) => {
       const ctrlr = new BaseController(req, res);
       try {
-        console.log(req);
         let user;
         try {
           user = jwt.verify(req.cookies.refreshJwt, config.api.jwt.refreshSecret) as IUserHiddenPassword;
@@ -83,7 +82,7 @@ export default (app: Router) => {
           return ctrlr.response(403, 'token does not correspond to user');
 
         const newAccessToken = jwt.sign(user, config.api.jwt.accessSecret);
-        return ctrlr.created(newAccessToken);
+        return ctrlr.k(newAccessToken);
       } catch (e) {
         return ctrlr.handleException(e);
       }

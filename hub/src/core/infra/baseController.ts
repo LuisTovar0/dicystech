@@ -18,7 +18,7 @@ export class BaseController {
     return StaticController.response(this.res, code, content, cookies);
   }
 
-  public ok<T>(dto?: T) {
+  public k<T>(dto?: T) {
     return StaticController.k(this.res, dto);
   }
 

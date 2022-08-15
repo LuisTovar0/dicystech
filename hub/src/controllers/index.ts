@@ -4,10 +4,10 @@ import jwt from "jsonwebtoken";
 import config from "../config";
 import {StaticController} from "../core/infra/baseController";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";
-import debug from './debugController';
-import conf from "./configController";
-import user from './userController';
-import lab from './labController';
+import debug from './debug.route';
+import conf from "./config.route";
+import user from './user.route';
+import lab from './lab.route';
 
 export default () => {
   const router = Router();

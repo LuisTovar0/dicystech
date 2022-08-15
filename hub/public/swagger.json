@@ -1,0 +1,335 @@
+{
+    "components": {
+        "examples": {},
+        "headers": {},
+        "parameters": {},
+        "requestBodies": {},
+        "responses": {},
+        "schemas": {
+            "LabDto": {
+                "properties": {
+                    "domainId": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "NoIdLabDto": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    },
+                    "components": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "NoIdUserDto": {
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {}
+    },
+    "info": {
+        "title": "DICYSTECH API",
+        "version": "0.1",
+        "contact": {}
+    },
+    "openapi": "3.0.0",
+    "paths": {
+        "/api/status": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "head": {
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/config/allcountries": {
+            "get": {
+                "operationId": "GetAllCountries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Configuration"]
+            }
+        },
+        "/api/config/countrieswithlab": {
+            "get": {
+                "operationId": "GetCountriesWithLab",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Configuration"]
+            }
+        },
+        "/api/config/robotcomponents": {
+            "get": {
+                "operationId": "GetRobotComponents",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Configuration"]
+            }
+        },
+        "/api/lab": {
+            "post": {
+                "operationId": "AddLab",
+                "responses": {
+                    "201": {
+                        "description": "Added Lab",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LabDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request: Validation failed"
+                    }
+                },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NoIdLabDto"
+                            }
+                        }
+                    }
+                },
+                "tags": ["Lab"]
+            },
+            "get": {
+                "operationId": "GetAllLabs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/LabDto"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Lab"]
+            }
+        },
+        "/api/lab/{name}": {
+            "get": {
+                "operationId": "GetLabByName",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LabDto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Lab not found"
+                    }
+                },
+                "tags": ["Lab"]
+            }
+        },
+        "/api/lab/bycountry/{country}": {
+            "get": {
+                "operationId": "GetLabsByCountry",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/LabDto"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Lab"]
+            }
+        },
+        "/api/lab/bycomponents": {
+            "post": {
+                "operationId": "GetLabsByComponents",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/LabDto"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Lab"]
+            }
+        },
+        "/api/user": {
+            "post": {
+                "operationId": "CreateAccount",
+                "responses": {
+                    "201": {
+                        "description": "The account has been created. An access JWT is returned in the content and a refresh JWT is returned in a cookie.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: validation failed"
+                    }
+                },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NoIdUserDto"
+                            }
+                        }
+                    }
+                },
+                "tags": ["User"]
+            }
+        },
+        "/api/user/authenticate": {
+            "post": {
+                "operationId": "AuthenticateUser",
+                "responses": {
+                    "200": {
+                        "description": "Authentication was successful. An access JWT is returned in the content and a refresh JWT is returned in the \"refreshToken\" cookie.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NoIdUserDto"
+                            }
+                        }
+                    }
+                },
+                "tags": ["User"]
+            }
+        },
+        "/api/user/refreshtoken": {
+            "get": {
+                "operationId": "RefreshToken",
+                "tags": ["User"],
+                "description": "The request should have the cookie \"refreshToken\" with the string of the refresh JWT.",
+                "responses": {
+                    "200": {
+                        "description": "The received refresh token is valid. An access JWT will be returned through the response content, along with a new refresh token through the cookie \"refreshToken\".",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

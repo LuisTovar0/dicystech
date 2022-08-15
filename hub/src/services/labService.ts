@@ -24,7 +24,6 @@ export default class LabService implements ILabService {
 
   async addLab(labDto: INoIdLabDto): Promise<ILabDto> {
     const lab = Lab.create(labDto);
-    console.log(this);
     return await this.repo.save(this.mapper.domainToDTO(lab));
   }
 
