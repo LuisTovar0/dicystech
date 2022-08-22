@@ -1,5 +1,7 @@
-import {Dispatch, SetStateAction, useState} from "react";
+import {Dispatch, SetStateAction, SyntheticEvent, useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {
+  Alert,
   Button,
   Checkbox,
   FormControl,
@@ -9,17 +11,19 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   TextField,
   Typography
 } from "@mui/material";
 
-import {AppInfoSetter} from "./App";
+import {AppState} from "./App";
 import BaseComponent from "./auxiliar/BaseComponent";
 import {formInputStyle} from "../styles/authFormStyles";
 import {addLabFormStyle, addLabStyle} from "../styles/addLabStyles";
 import ConfigService from "../service/configService";
 import LabService from "../service/labService";
 import INoIdLabDto from "../dto/lab/iNoIdLabDto";
+import ILabDto from "../dto/lab/iLabDto";
 
 interface AddLabFieldInfoMap {
   name: AddLabField<string>;
@@ -36,7 +40,11 @@ interface AddLabField<TCtrl> {
   setter: Dispatch<SetStateAction<TCtrl>>
 }
 
-export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) {
+export default function AddLab({topInfoState}: { topInfoState: AppState }) {
+  const [topInfo, topInfoSetter] = topInfoState;
+  // useEffect(() => topInfoSetter({...topInfo, loading: true}));
+
+  const navigate = useNavigate();
   const configService = new ConfigService();
 
   const [possibleCountries, setPossibleCountries] = useState([] as string[]);
@@ -46,6 +54,10 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
   const [possibleComponents, setPossibleComponents] = useState([] as string[]);
   if (possibleComponents.length === 0)
     configService.getRobotSupportedComponents({then: r => setPossibleComponents(r.data)});
+
+  useEffect(() =>
+      topInfoSetter({...topInfo, loading: possibleComponents.length === 0 || possibleCountries.length === 0}),
+    [possibleComponents, possibleComponents]);
 
   const [selectedComponentsValue, selectedComponentsSetter] = useState([] as string[]);
 
@@ -65,10 +77,47 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
   const countryError = fields.country.value.trim() === '';
   const error = attemptedSubmit && (nameError || countryError);
 
+  // success snackbar
+  const handleSnackbarClose = (event?: SyntheticEvent | Event, reason?: string) => {
+    if (reason !== 'clickaway')
+      topInfoSetter({...topInfo, snackbarOpen: false, snackbar: undefined});
+  };
+  const snackbar = (name?: string) =>
+    <Snackbar key="add-lab-success-snackbar" open onClose={handleSnackbarClose}>
+      <Alert severity="success" onClose={handleSnackbarClose}>
+        {`Your Lab${name ? " " + name : ""} has been successfully created`}
+      </Alert>
+    </Snackbar>;
+
+  const onSubmit = () => {
+    setAttemptedSubmit(true);
+    if (nameError || countryError) return;
+
+    const dto: INoIdLabDto = {
+      name: fields.name.value,
+      country: fields.country.value,
+      components: fields.components.value
+    };
+    const service = new LabService();
+    service.addLab(dto, {
+      then: r => {
+        const data = r.data as ILabDto;
+        topInfoSetter({...topInfo, snackbarOpen: true, snackbar: snackbar(data.name)});
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (topInfo.snackbar?.key === snackbar().key)
+      navigate('/');
+  }, [topInfo.snackbar]);
+
   return <BaseComponent elem={
     <div style={addLabStyle}>
       <div style={addLabFormStyle}>
+        {/* Lab name textfield */}
         <TextField
+          autoFocus
           style={formInputStyle}
           variant="filled"
           required error={nameError && attemptedSubmit}
@@ -78,6 +127,7 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
           helperText="An alphanumeric name. Accented characters and -'., are allowed."
         />
 
+        {/* Lab hash textfield */}
         <TextField
           style={formInputStyle}
           variant="filled"
@@ -86,6 +136,7 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
           value={fields.labHash.value}
         />
 
+        {/* Country select */}
         <FormControl required error={countryError && attemptedSubmit}
                      style={{...formInputStyle, maxWidth: "50%", minWidth: 250}}>
           <InputLabel>Country</InputLabel>
@@ -96,6 +147,7 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
           </Select>
         </FormControl>
 
+        {/* Components checkboxes */}
         <FormControl style={formInputStyle}>
           <FormLabel component="legend">Components</FormLabel>
           <FormGroup row> {possibleComponents.map(componentName =>
@@ -109,28 +161,13 @@ export default function AddLab({topInfoState}: { topInfoState: AppInfoSetter }) 
             />)} </FormGroup>
         </FormControl>
 
+        {/* Submit button */}
         <div style={{display: 'flex', height: 60, alignItems: 'center'}}>
-          <Button variant="contained" style={{...formInputStyle, width: 120}}
-                  onClick={() => {
-                    setAttemptedSubmit(true);
-                    if (nameError || countryError) return;
-
-                    const dto: INoIdLabDto = {
-                      name: fields.name.value,
-                      country: fields.country.value,
-                      components: fields.components.value
-                    };
-                    const service = new LabService();
-                    service.addLab(dto, {
-                      then: r => { // todo
-                        console.log('success', r.data);
-                      }
-                    });
-                  }}> Add Lab </Button>
+          <Button variant="contained" style={{...formInputStyle, width: 120}} onClick={onSubmit}> Add Lab </Button>
           {error
             ? <Typography style={{marginLeft: 30}} color="error">Please fill out the required fields</Typography>
             : null}
         </div>
       </div>
-    </div>} topInfoState={topInfoState} pageName="Add Lab"/>;
-}
+    </div>} topState={topInfoState} pageName="Add Lab"/>;
+};

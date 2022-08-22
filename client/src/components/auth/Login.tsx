@@ -5,7 +5,7 @@ import {TextField} from "@mui/material";
 
 import UserService from "../../service/userService";
 import AuthForm, {FieldInfo, fieldInfos, onInput} from "./AuthForm";
-import {AppInfoSetter} from "../App";
+import {AppState} from "../App";
 import config from "../../configs/config";
 import {formInputStyle} from "../../styles/authFormStyles";
 
@@ -14,7 +14,7 @@ export interface LoginFieldInfoMap {
   password: FieldInfo
 }
 
-export function Login({topInfoState}: { topInfoState: AppInfoSetter }) {
+export function Login({topInfoState}: { topInfoState: AppState }) {
   const navigate = useNavigate();
   const fields = fieldInfos({email: 'E-mail', password: 'Password'}) as unknown as LoginFieldInfoMap;
 

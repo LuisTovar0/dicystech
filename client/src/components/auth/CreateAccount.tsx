@@ -4,7 +4,7 @@ import crypto from 'crypto-js';
 
 import UserService from "../../service/userService";
 import AuthForm, {fieldInfos, onInput} from "./AuthForm";
-import {AppInfoSetter} from "../App";
+import {AppState} from "../App";
 import config from "../../configs/config";
 import {TextField} from "@mui/material";
 import {formInputStyle} from "../../styles/authFormStyles";
@@ -13,7 +13,7 @@ import {LoginFieldInfoMap} from "./Login";
 interface CreateAccountFieldInfoMap extends LoginFieldInfoMap {
 }
 
-export function CreateAccount({topInfoState}: { topInfoState: AppInfoSetter }) {
+export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
   const navigate = useNavigate();
   const fields = fieldInfos({email: 'E-mail', password: 'Password'}) as unknown as CreateAccountFieldInfoMap;
 

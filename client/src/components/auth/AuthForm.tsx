@@ -3,11 +3,11 @@ import {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
 import {Paper, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 
-import {AppInfoSetter, AppTopLevelInfo, Elem} from "../App";
+import {AppInfo, AppState, Elem} from "../App";
 import {componentStyle, formInputStyle, paperStyle} from "../../styles/authFormStyles";
 
 export interface FormProps {
-  topInfoState: AppInfoSetter,
+  topInfoState: AppState,
   formName: string,
   form: Elem,
   alternativeOpt: {
@@ -55,7 +55,7 @@ export default function AuthForm({topInfoState, formName, form, alternativeOpt, 
         name: alternativeOpt.description,
         handler: () => navigate(alternativeOpt.route)
       }]
-    } as AppTopLevelInfo;
+    } as AppInfo;
     const [state, setState] = topInfoState;
     if (state.pageName !== newState.pageName) setState(newState);
   });
