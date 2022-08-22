@@ -42,7 +42,6 @@ interface AddLabField<TCtrl> {
 
 export default function AddLab({topInfoState}: { topInfoState: AppState }) {
   const [topInfo, topInfoSetter] = topInfoState;
-  // useEffect(() => topInfoSetter({...topInfo, loading: true}));
 
   const navigate = useNavigate();
   const configService = new ConfigService();
@@ -55,9 +54,10 @@ export default function AddLab({topInfoState}: { topInfoState: AppState }) {
   if (possibleComponents.length === 0)
     configService.getRobotSupportedComponents({then: r => setPossibleComponents(r.data)});
 
-  useEffect(() =>
-      topInfoSetter({...topInfo, loading: possibleComponents.length === 0 || possibleCountries.length === 0}),
-    [possibleComponents, possibleComponents]);
+  useEffect(() => topInfoSetter({
+    ...topInfo,
+    loading: possibleComponents.length === 0 || possibleCountries.length === 0
+  }), [possibleComponents, possibleComponents]);
 
   const [selectedComponentsValue, selectedComponentsSetter] = useState([] as string[]);
 
@@ -72,6 +72,7 @@ export default function AddLab({topInfoState}: { topInfoState: AppState }) {
     labSchema: {name: 'Lab Schema (optional)', value: states[4][0], setter: states[4][1]}
   } as AddLabFieldInfoMap;
 
+  // errors
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const nameError = fields.name.value.trim() === '' || !/[\ -'0-9a-zÀ-ÿA-Z.,]+/.test(fields.name.value);
   const countryError = fields.country.value.trim() === '';
@@ -80,10 +81,10 @@ export default function AddLab({topInfoState}: { topInfoState: AppState }) {
   // success snackbar
   const handleSnackbarClose = (event?: SyntheticEvent | Event, reason?: string) => {
     if (reason !== 'clickaway')
-      topInfoSetter({...topInfo, snackbarOpen: false, snackbar: undefined});
+      topInfoSetter({...topInfo, snackbar: undefined});
   };
   const snackbar = (name?: string) =>
-    <Snackbar key="add-lab-success-snackbar" open onClose={handleSnackbarClose}>
+    <Snackbar key="add-lab-success-snackbar" open onClose={handleSnackbarClose} autoHideDuration={60000}>
       <Alert severity="success" onClose={handleSnackbarClose}>
         {`Your Lab${name ? " " + name : ""} has been successfully created`}
       </Alert>
@@ -102,11 +103,12 @@ export default function AddLab({topInfoState}: { topInfoState: AppState }) {
     service.addLab(dto, {
       then: r => {
         const data = r.data as ILabDto;
-        topInfoSetter({...topInfo, snackbarOpen: true, snackbar: snackbar(data.name)});
+        topInfoSetter({...topInfo, snackbar: snackbar(data.name)});
       }
     });
   };
 
+  // after successful submit
   useEffect(() => {
     if (topInfo.snackbar?.key === snackbar().key)
       navigate('/');

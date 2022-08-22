@@ -18,7 +18,6 @@ export interface AppInfo {
   pageName: string;
   options: NavBarOption[];
   snackbar?: Elem;
-  snackbarOpen: boolean;
   loading: boolean;
 }
 
@@ -32,7 +31,7 @@ export type State<T> = [T, React.Dispatch<React.SetStateAction<T>>];
 export type AppState = State<AppInfo>;
 
 function App() {
-  const topLevelState = useState<AppInfo>({pageName: '', options: [], snackbarOpen: false, loading: false});
+  const topLevelState = useState<AppInfo>({pageName: '', options: [], loading: false});
   const [{pageName, options, snackbar, loading}] = topLevelState;
 
   return (<>
