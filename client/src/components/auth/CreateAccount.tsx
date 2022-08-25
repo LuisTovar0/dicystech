@@ -18,6 +18,7 @@ export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
   const fields = fieldInfos({email: 'E-mail', password: 'Password'}) as unknown as CreateAccountFieldInfoMap;
 
   function register(setMessage: Dispatch<SetStateAction<string>>) {
+    const email = fields.email.value; //todo validate fields
     const password = fields.password.value;
 
     // 8 characters length
@@ -41,25 +42,26 @@ export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
   }
 
   return (
-    <AuthForm formName={'Create Account'} topInfoState={topInfoState} onClick={register}
-              alternativeOpt={{route: '/login', description: 'Log In'}}
-              form={<>
-                <TextField
-                  style={formInputStyle}
-                  variant="standard"
-                  label="E-mail"
-                  value={fields.email.value}
-                  onInput={event => onInput(event, fields.email)}
-                ></TextField>
-                <TextField
-                  style={formInputStyle}
-                  variant="standard"
-                  label="Password"
-                  type="password"
-                  value={fields.password.value}
-                  onInput={event => onInput(event, fields.password)}
-                ></TextField>
-              </>}
+    <AuthForm
+      formName={'Create Account'} topInfoState={topInfoState} onClick={register}
+      alternativeOpt={{route: '/login', description: 'Log In'}}
+      form={<>
+        <TextField
+          style={formInputStyle}
+          variant="standard"
+          label="E-mail"
+          value={fields.email.value}
+          onInput={event => onInput(event, fields.email)}
+        ></TextField>
+        <TextField
+          style={formInputStyle}
+          variant="standard"
+          label="Password"
+          type="password"
+          value={fields.password.value}
+          onInput={event => onInput(event, fields.password)}
+        ></TextField>
+      </>}
     />
   );
 }

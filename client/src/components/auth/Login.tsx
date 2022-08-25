@@ -25,11 +25,12 @@ export function Login({topInfoState}: { topInfoState: AppState }) {
     service.login(fields.email.value, encryptedPassword,
       {
         then: r => {
+          console.log("nasj");
           config.accessJwt = r.data as string;
           navigate('/' + config.routes.home);
         },
         catchEx: ({response}) => {
-          setMessage([404, 401].indexOf(response.status) != -1
+          setMessage(404 === response.status || 401 === response.status
             ? `Those credentials don't match.`
             : `Unexpected error: ${response.data}`);
         }
@@ -37,24 +38,25 @@ export function Login({topInfoState}: { topInfoState: AppState }) {
   }
 
   return (
-    <AuthForm topInfoState={topInfoState} formName={'Log In'} onClick={login}
-              alternativeOpt={{route: '/createAccount', description: 'Create Account'}}
-              form={<>
-                <TextField
-                  style={formInputStyle}
-                  variant="standard"
-                  label="E-mail"
-                  value={fields.email.value}
-                  onInput={event => onInput(event, fields.email)}
-                />
-                <TextField
-                  style={formInputStyle}
-                  variant="standard"
-                  label="Password"
-                  type="password"
-                  value={fields.password.value}
-                  onInput={event => onInput(event, fields.password)}
-                />
-              </>}/>
+    <AuthForm
+      topInfoState={topInfoState} formName={'Log In'} onClick={login}
+      alternativeOpt={{route: '/createAccount', description: 'Create Account'}}
+      form={<>
+        <TextField
+          style={formInputStyle}
+          variant="standard"
+          label="E-mail"
+          value={fields.email.value}
+          onInput={event => onInput(event, fields.email)}
+        />
+        <TextField
+          style={formInputStyle}
+          variant="standard"
+          label="Password"
+          type="password"
+          value={fields.password.value}
+          onInput={event => onInput(event, fields.password)}
+        />
+      </>}/>
   );
 }

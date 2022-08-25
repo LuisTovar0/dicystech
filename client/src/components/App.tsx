@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AppBar, Backdrop, Box, CircularProgress} from "@mui/material";
 import 'fontsource-roboto';
@@ -10,7 +10,7 @@ import {Navbar, PageName} from '../styles/appStyles';
 import NavbarMenu from './auxiliar/NavbarMenu';
 import {Login} from "./auth/Login";
 import Home from "./Home";
-import AddLab from "./AddLab";
+import AddLab from "./addLab/AddLab";
 
 export type Elem = JSX.Element;
 
@@ -31,8 +31,9 @@ export type State<T> = [T, React.Dispatch<React.SetStateAction<T>>];
 export type AppState = State<AppInfo>;
 
 function App() {
-  const topLevelState = useState<AppInfo>({pageName: '', options: [], loading: false});
-  const [{pageName, options, snackbar, loading}] = topLevelState;
+  const topInfoState = useState<AppInfo>({pageName: '', options: [], loading: false});
+  const [{pageName, options, snackbar, loading}] = topInfoState;
+  useEffect(() => console.log('loading', loading), [loading]);
 
   return (<>
     <AppBar position="static">
@@ -49,11 +50,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/">
-          <Route index element={<Redirect topInfoState={topLevelState}/>}/>
-          <Route path={config.routes.login} element={<Login topInfoState={topLevelState}/>}/>
-          <Route path={config.routes.createAccount} element={<CreateAccount topInfoState={topLevelState}/>}/>
-          <Route path={config.routes.home} element={<Home topState={topLevelState}/>}/>
-          <Route path={config.routes.addLab} element={<AddLab topInfoState={topLevelState}/>}/>
+          <Route index element={<Redirect topInfoState={topInfoState}/>}/>
+          <Route path={config.routes.login} element={<Login topInfoState={topInfoState}/>}/>
+          <Route path={config.routes.createAccount} element={<CreateAccount topInfoState={topInfoState}/>}/>
+          <Route path={config.routes.home} element={<Home topState={topInfoState}/>}/>
+          <Route path={config.routes.addLab} element={<AddLab topInfoState={topInfoState}/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

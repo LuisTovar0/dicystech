@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {Dispatch, FormEvent, SetStateAction, useEffect, useState} from "react";
+import {Dispatch, FormEvent, SetStateAction, useState} from "react";
 import {Paper, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 
@@ -48,17 +48,16 @@ export const onInput = (event: FormEvent<HTMLDivElement>, field: FieldInfo) =>
  * In practice, it will be the "login" or "createAccount" function, because this is AuthForm.
  */
 export default function AuthForm({topInfoState, formName, form, alternativeOpt, onClick}: FormProps) {
-  useEffect(() => {
-    const newState = {
-      pageName: formName,
-      options: [{
-        name: alternativeOpt.description,
-        handler: () => navigate(alternativeOpt.route)
-      }]
-    } as AppInfo;
-    const [state, setState] = topInfoState;
-    if (state.pageName !== newState.pageName) setState(newState);
-  });
+  const newState = {
+    pageName: formName,
+    options: [{
+      name: alternativeOpt.description,
+      handler: () => navigate(alternativeOpt.route)
+    }]
+  } as AppInfo;
+  const [topInfo, setTopInfo] = topInfoState;
+  if (topInfo.pageName !== newState.pageName)
+    setTopInfo(newState);
 
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
@@ -67,7 +66,10 @@ export default function AuthForm({topInfoState, formName, form, alternativeOpt, 
     <div style={componentStyle}>
       <Paper style={paperStyle} elevation={3}>
         {form}
-        <Button style={{...formInputStyle, marginTop: 20}} onClick={() => onClick(setMessage)}>{formName}</Button>
+        <Button style={{...formInputStyle, marginTop: 20}} onClick={() => {
+          setTopInfo({...topInfo, loading: true});
+          onClick(setMessage);
+        }}>{formName}</Button>
       </Paper>
       <Typography>{message}</Typography>
     </div>

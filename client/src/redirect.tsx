@@ -24,7 +24,7 @@ export default function Redirect({topInfoState}: { topInfoState: AppState }) {
         catchEx: r => {
           console.log(r);
           if (r.response.status === 403) alert('your session expired');
-          navigate('/' + config.routes.createAccount);
+          navigate('/' + config.routes.login);
         }
       });
     }

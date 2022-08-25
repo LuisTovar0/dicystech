@@ -3,7 +3,7 @@ import {CSSProperties} from "react";
 export const componentStyle: CSSProperties = {
   display: "grid",
   placeItems: "center",
-  height: "100vh"
+  height: "75vh"
 };
 
 export const paperStyle: CSSProperties = {
