@@ -9,7 +9,7 @@ export default class LabService implements ILabService {
 
   static readonly baseUrl = `/api/lab`;
 
-  addLab(dto: INoIdLabDto, callbacks: AxiosCallbacks<ILabDto>): void {
+  addRobotLab(dto: INoIdLabDto, callbacks: AxiosCallbacks<ILabDto>): void {
     axios.post<ILabDto>(config.backendUrl + LabService.baseUrl, dto)
       .then(callbacks.then).catch(callbacks.catchEx);
   }

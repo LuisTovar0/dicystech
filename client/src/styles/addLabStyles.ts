@@ -1,15 +1,15 @@
 import {CSSProperties} from "react";
 
 export const addLabStyle: CSSProperties = {
-  display: "grid",
-  placeItems: "center",
+  display: "flex",
+  justifyContent: "center",
   minHeight: "80vh",
-  width: "100vw"
+  width: "97vw"
 };
 
 export const addLabFormStyle: CSSProperties = {
   width: "75%",
   display: "flex",
   flexDirection: "column",
-  // justifyContent: "center",
+  marginTop: 60
 };

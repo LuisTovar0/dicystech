@@ -13,20 +13,14 @@ import {
 
 import {formInputStyle} from "../../styles/authFormStyles";
 import ConfigService from "../../service/configService";
-import {AppState, State} from "../App";
-import {AddLabInfo} from "./AddLab";
+import {LabFormProps} from "./AddLab";
 import INoIdLabDto from "../../dto/lab/iNoIdLabDto";
 
-interface RobotLabFormProps {
-  topInfoState: AppState;
-  addLabState: State<AddLabInfo>;
-}
-
-export default function RobotLabForm({topInfoState, addLabState}: RobotLabFormProps) {
+export default function RobotLabForm({topInfoState, addLabState}: LabFormProps) {
   const [topInfo, topInfoSetter] = topInfoState;
   const [addLabInfo, addLabInfoSetter] = addLabState;
 
-  // fetch configurable information
+  //#region fetch configurable information
   const configService = new ConfigService();
 
   const [possibleCountries, setPossibleCountries] = useState<string[]>([]);
@@ -42,6 +36,7 @@ export default function RobotLabForm({topInfoState, addLabState}: RobotLabFormPr
     configService.getRobotSupportedComponents({
       then: r => setPossibleComponents(r.data)
     });
+  //#endregion
 
   // set loading while fetching config
   if ((!countriesAreFetched() || !componentsAreFetched()) && !topInfo.loading)
@@ -51,21 +46,21 @@ export default function RobotLabForm({topInfoState, addLabState}: RobotLabFormPr
     topInfoSetter({...topInfo, loading: false});
 
   // errors
-  const nameError = addLabInfo.dto.name.trim() === '' || !/[\ -'0-9a-zÀ-ÿA-Z.,]+/.test(addLabInfo.dto.name);
-  const countryError = addLabInfo.dto.country.trim() === '';
+  const nameError = addLabInfo.robotDto.name.trim() === '' || !/[\ -'0-9a-zÀ-ÿA-Z.,]+/.test(addLabInfo.robotDto.name);
+  const countryError = addLabInfo.robotDto.country.trim() === '';
   useEffect(() =>
       addLabInfoSetter({...addLabInfo, error: nameError || countryError}),
     [nameError, countryError]);
 
-  const setDto = (dto: INoIdLabDto) => addLabInfoSetter({...addLabInfo, dto});
+  const setDto = (dto: INoIdLabDto) => addLabInfoSetter({...addLabInfo, robotDto: dto});
 
   return <>
     {/* Lab name textfield */}
     <TextField
       autoFocus variant="filled" label="Name" style={formInputStyle}
       required error={nameError && addLabInfo.attemptedSubmit}
-      onChange={e => setDto({...addLabInfo.dto, name: e.target.value})}
-      value={addLabInfo.dto.name}
+      onChange={e => setDto({...addLabInfo.robotDto, name: e.target.value})}
+      value={addLabInfo.robotDto.name}
       helperText="An alphanumeric name. Accented characters and -'., are allowed."
     />
 
@@ -81,8 +76,8 @@ export default function RobotLabForm({topInfoState, addLabState}: RobotLabFormPr
     <FormControl required error={countryError && addLabInfo.attemptedSubmit}
                  style={{...formInputStyle, maxWidth: "50%", minWidth: 250}}>
       <InputLabel>Country</InputLabel>
-      <Select label="Country" value={addLabInfo.dto.country}
-              onChange={e => setDto({...addLabInfo.dto, country: e.target.value as string})}>
+      <Select label="Country" value={addLabInfo.robotDto.country}
+              onChange={e => setDto({...addLabInfo.robotDto, country: e.target.value as string})}>
         {possibleCountries.map(country => <MenuItem value={country} key={country}> {country} </MenuItem>)}
       </Select>
     </FormControl>
@@ -96,11 +91,11 @@ export default function RobotLabForm({topInfoState, addLabState}: RobotLabFormPr
             label={componentName} name={componentName} key={componentName}
             control={
               <Checkbox onChange={e => {
-                const copy = [...addLabInfo.dto.components];
+                const copy = [...addLabInfo.robotDto.components];
                 if (e.target.checked) copy.push(e.target.name);
                 else copy.splice(copy.indexOf(e.target.name), 1);
-                setDto({...addLabInfo.dto, components: copy});
-              }} checked={addLabInfo.dto.components.includes(componentName)}/>
+                setDto({...addLabInfo.robotDto, components: copy});
+              }} checked={addLabInfo.robotDto.components.includes(componentName)}/>
             }/>)}
       </FormGroup>
     </FormControl>

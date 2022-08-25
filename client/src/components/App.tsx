@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AppBar, Backdrop, Box, CircularProgress} from "@mui/material";
 import 'fontsource-roboto';
@@ -33,7 +33,6 @@ export type AppState = State<AppInfo>;
 function App() {
   const topInfoState = useState<AppInfo>({pageName: '', options: [], loading: false});
   const [{pageName, options, snackbar, loading}] = topInfoState;
-  useEffect(() => console.log('loading', loading), [loading]);
 
   return (<>
     <AppBar position="static">

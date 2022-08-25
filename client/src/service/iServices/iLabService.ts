@@ -4,7 +4,7 @@ import ILabDto from "../../dto/lab/iLabDto";
 
 export default interface ILabService {
 
-  addLab(dto: INoIdLabDto, callbacks: AxiosCallbacks<ILabDto>): void;
+  addRobotLab(dto: INoIdLabDto, callbacks: AxiosCallbacks<ILabDto>): void;
 
   getAllLabs(callbacks: AxiosCallbacks<ILabDto[]>): void;
 
