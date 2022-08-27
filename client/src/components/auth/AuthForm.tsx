@@ -4,7 +4,7 @@ import {Paper, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 
 import {AppInfo, AppState, Elem} from "../App";
-import {componentStyle, formInputStyle, paperStyle} from "../../styles/authFormStyles";
+import {authFormStyle, errMessageStyle, formInputStyle, paperStyle} from "../../styles/authFormStyles";
 
 export interface FormProps {
   topInfoState: AppState,
@@ -63,15 +63,15 @@ export default function AuthForm({topInfoState, formName, form, alternativeOpt, 
   const [message, setMessage] = useState('');
 
   return (
-    <div style={componentStyle}>
+    <div style={authFormStyle}>
       <Paper style={paperStyle} elevation={3}>
         {form}
         <Button style={{...formInputStyle, marginTop: 20}} onClick={() => {
-          setTopInfo({...topInfo, loading: true});
+          // setTopInfo({...topInfo, loading: true});
           onClick(setMessage);
         }}>{formName}</Button>
       </Paper>
-      <Typography>{message}</Typography>
+      <Typography style={errMessageStyle}>{message}</Typography>
     </div>
   );
 }

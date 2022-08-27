@@ -5,6 +5,7 @@ import {StaticController} from "../core/infra/baseController";
 import ILabService from "../services/iServices/iLabService";
 import config from "../config";
 import INoIdLabDto from "../dto/iNoIdDto/iNoIdLabDto";
+import {dbIsConnected} from "./index";
 
 const {k, created, handleException} = StaticController;
 
@@ -17,6 +18,7 @@ export default (app: Router) => {
   const service = Container.get(config.deps.services.lab.name) as ILabService;
 
   route.post('',
+    dbIsConnected,
     celebrate({
       body: {
         name: Joi.string().required(),
@@ -36,6 +38,7 @@ export default (app: Router) => {
   );
 
   route.get('',
+    dbIsConnected,
     async (req, res) => {
       try {
         const result = await service.getAllLabs();
@@ -46,6 +49,7 @@ export default (app: Router) => {
     });
 
   route.get('/:name',
+    dbIsConnected,
     celebrate({
       params: {name: Joi.string().required()}
     }),
@@ -59,6 +63,7 @@ export default (app: Router) => {
     });
 
   route.get('/bycountry/:country',
+    dbIsConnected,
     celebrate({
       params: {country: Joi.string().required()}
     }),
@@ -72,6 +77,7 @@ export default (app: Router) => {
     });
 
   route.post('/getbycomponents',
+    dbIsConnected,
     celebrate({
       body: Joi.array()
     }),

@@ -1,6 +1,6 @@
 import {CSSProperties} from "react";
 
-export const componentStyle: CSSProperties = {
+export const authFormStyle: CSSProperties = {
   display: "grid",
   placeItems: "center",
   height: "75vh"
@@ -19,5 +19,10 @@ export const paperStyle: CSSProperties = {
 
 export const formInputStyle: CSSProperties = {
   marginTop: 10,
-  marginBottom: 10
+  marginBottom: 10,
+  width: "80%"
+};
+
+export const errMessageStyle: CSSProperties = {
+  width: "50%"
 };

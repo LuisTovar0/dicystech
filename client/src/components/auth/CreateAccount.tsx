@@ -1,12 +1,13 @@
-import React, {Dispatch, SetStateAction} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import crypto from 'crypto-js';
+import InfoIcon from '@mui/icons-material/Info';
 
 import UserService from "../../service/userService";
 import AuthForm, {fieldInfos, onInput} from "./AuthForm";
 import {AppState} from "../App";
 import config from "../../configs/config";
-import {TextField} from "@mui/material";
+import {IconButton, TextField, Tooltip} from "@mui/material";
 import {formInputStyle} from "../../styles/authFormStyles";
 import {LoginFieldInfoMap} from "./Login";
 
@@ -17,17 +18,20 @@ export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
   const navigate = useNavigate();
   const fields = fieldInfos({email: 'E-mail', password: 'Password'}) as unknown as CreateAccountFieldInfoMap;
 
-  function register(setMessage: Dispatch<SetStateAction<string>>) {
-    const email = fields.email.value; //todo validate fields
-    const password = fields.password.value;
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}])|(([a-zA-Z\-\d]+\.)+[a-zA-Z]{2,}))$/;
+  const emailError = !emailRegex.test(fields.email.value);
+  const pwdRegex = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*\d.*\d)(?=.*[a-z].*[a-z].*[a-z]).{8}$/;
+  const pwdError = !pwdRegex.test(fields.password.value);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
-    // 8 characters length
-    // 2 letters in Upper Case
-    // 1 Special Character (!@#$&*)
-    // 2 numerals (0-9)
-    // 3 letters in Lower Case
-    // if (!/^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*\d.*\d)(?=.*[a-z].*[a-z].*[a-z]).{8}$/.test(password))
-    //   console.log('unsafe password')
+  function register(setMessage: Dispatch<SetStateAction<string>>) {
+    setAttemptedSubmit(true);
+
+    const email = fields.email.value;
+    if (!emailRegex.test(email)) return;
+
+    const password = fields.password.value;
+    // if (!pwdRegex.test(password)) return;
 
     const service = new UserService();
     service.register({email: fields.email.value, password: crypto.SHA256(password).toString()},
@@ -36,7 +40,7 @@ export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
           config.accessJwt = r.data as string;
           navigate('/');
         },
-        catchEx: r => setMessage(String(r))
+        catchEx: r => setMessage(`Error: ${r.response.data}`)
       }
     );
   }
@@ -47,20 +51,22 @@ export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
       alternativeOpt={{route: '/login', description: 'Log In'}}
       form={<>
         <TextField
-          style={formInputStyle}
-          variant="standard"
-          label="E-mail"
-          value={fields.email.value}
+          style={formInputStyle} variant="standard" helperText={emailError && attemptedSubmit ? 'Invalid email.' : null}
+          error={emailError && attemptedSubmit} label="E-mail" value={fields.email.value}
           onInput={event => onInput(event, fields.email)}
         ></TextField>
-        <TextField
-          style={formInputStyle}
-          variant="standard"
-          label="Password"
-          type="password"
-          value={fields.password.value}
-          onInput={event => onInput(event, fields.password)}
-        ></TextField>
+        <div style={formInputStyle}>
+          <TextField
+            variant="standard" label="Password" type="password" value={fields.password.value}
+            error={pwdError && attemptedSubmit} onInput={event => onInput(event, fields.password)}
+          ></TextField>
+          <Tooltip title={"Must have at least 8 characters length, 2 upper case letters, 3 lower case letters, 1 " +
+            "special character and 2 numerals."}>
+            <IconButton>
+              <InfoIcon/>
+            </IconButton>
+          </Tooltip>
+        </div>
       </>}
     />
   );

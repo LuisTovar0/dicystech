@@ -8,6 +8,7 @@ import IUserService from "../services/iServices/iUserService";
 import {BaseController} from "../core/infra/baseController";
 import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";
+import {dbIsConnected} from "./index";
 
 const route = Router();
 
@@ -18,6 +19,7 @@ export default (app: Router) => {
   const service = Container.get(config.deps.services.user.name) as IUserService;
 
   route.post('',
+    dbIsConnected,
     celebrate({
       body: {
         email: Joi.string().required(),
@@ -39,6 +41,7 @@ export default (app: Router) => {
   );
 
   route.post('/authenticate',
+    dbIsConnected,
     celebrate({
       body: {
         email: Joi.string().required(),
@@ -63,6 +66,7 @@ export default (app: Router) => {
   );
 
   route.get('/refreshtoken',
+    dbIsConnected,
     celebrate({
       cookies: {
         refreshJwt: Joi.string().required()

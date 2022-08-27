@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response, Router} from 'express';
 import jwt from "jsonwebtoken";
 
-import config from "../config";
+import config, {MongoConfig} from "../config";
 import {StaticController} from "../core/infra/baseController";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";
 import debug from './debug.route';
@@ -20,6 +20,7 @@ export default () => {
   return router;
 }
 
+// middleware functions
 export function authorization(req: Request, res: Response, next: NextFunction) {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return StaticController.badRequest(res, `The request does not have an 'authorization' header.`);
@@ -36,4 +37,11 @@ export function authorization(req: Request, res: Response, next: NextFunction) {
     req.body.requester = user;
     next();
   });
+}
+
+export function dbIsConnected(req: Request, res: Response, next: NextFunction) {
+  if (config.dbType === 'mongo' && (config.db as MongoConfig).connected)
+    next();
+  else
+    StaticController.response(res, 503, `The server isn't connected to the MongoDB database.`);
 }
