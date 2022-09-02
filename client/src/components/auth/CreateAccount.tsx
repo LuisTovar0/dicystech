@@ -2,14 +2,13 @@ import React, {Dispatch, SetStateAction, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import crypto from 'crypto-js';
 import InfoIcon from '@mui/icons-material/Info';
-
-import UserService from "../../service/userService";
 import AuthForm, {fieldInfos, onInput} from "./AuthForm";
 import {AppState} from "../App";
-import config from "../../configs/config";
+import config from "../../config";
 import {IconButton, TextField, Tooltip} from "@mui/material";
 import {formInputStyle} from "../../styles/authFormStyles";
 import {LoginFieldInfoMap} from "./Login";
+import dependencyInjector from "../../config/dependencyInjector";
 
 interface CreateAccountFieldInfoMap extends LoginFieldInfoMap {
 }
@@ -33,14 +32,14 @@ export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
     const password = fields.password.value;
     // if (!pwdRegex.test(password)) return;
 
-    const service = new UserService();
+    const service = dependencyInjector.userService;
     service.register({email: fields.email.value, password: crypto.SHA256(password).toString()},
       {
         then: r => {
           config.accessJwt = r.data as string;
           navigate('/');
         },
-        catchEx: r => setMessage(`Error: ${r.response.data}`)
+        catchEx: r => setMessage(`Error ${r.response.status}: ${r.response.data}`)
       }
     );
   }

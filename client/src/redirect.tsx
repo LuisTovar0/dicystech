@@ -1,9 +1,8 @@
 import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-
-import UserService from "./service/userService";
-import config from "./configs/config";
+import config from "./config";
 import {AppState} from "./components/App";
+import dependencyInjector from "./config/dependencyInjector";
 
 /**
  * Handles redirections according to the app's state and the user's session.
@@ -11,7 +10,7 @@ import {AppState} from "./components/App";
 export default function Redirect({topInfoState}: { topInfoState: AppState }) {
   const navigate = useNavigate();
   useEffect(() => {
-    const service = new UserService();
+    const service = dependencyInjector.userService;
     if (config.accessJwt)
       navigate('/' + config.routes.home);
     else {

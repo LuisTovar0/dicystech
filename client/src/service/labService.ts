@@ -3,7 +3,7 @@ import INoIdLabDto from "../dto/lab/iNoIdLabDto";
 import ILabDto from "../dto/lab/iLabDto";
 import {AxiosCallbacks} from "./userService";
 import axios from "axios";
-import config from "../configs/config";
+import config from "../config";
 
 export default class LabService implements ILabService {
 

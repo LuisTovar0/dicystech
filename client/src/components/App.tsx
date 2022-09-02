@@ -3,7 +3,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AppBar, Backdrop, Box, CircularProgress} from "@mui/material";
 import 'fontsource-roboto';
 
-import config from "../configs/config";
+import config from "../config";
 import {CreateAccount} from "./auth/CreateAccount";
 import Redirect from "../redirect";
 import {Navbar, PageName} from '../styles/appStyles';

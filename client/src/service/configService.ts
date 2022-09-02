@@ -1,11 +1,9 @@
-import {Service} from "typedi";
 import axios from "axios";
 
-import config from "../configs/config";
+import config from "../config";
 import IConfigService from "./iServices/iConfigService";
 import {AxiosCallbacks} from "./userService";
 
-@Service()
 export default class ConfigService implements IConfigService {
 
   private readonly apiPath = '/api/config';

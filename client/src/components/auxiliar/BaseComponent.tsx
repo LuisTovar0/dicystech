@@ -1,7 +1,7 @@
 import {NavigateFunction, useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 
-import config from "../../configs/config";
+import config from "../../config";
 import {AppInfo, AppState, Elem, NavBarOption} from "../App";
 
 export interface BaseComponentProps {

@@ -1,5 +1,5 @@
 {
-  "name": "dicystech-hub-be",
+  "name": "dicystech-hub",
   "version": "0.1",
   "scripts": {
       "start": "tsc & node build/app.js",

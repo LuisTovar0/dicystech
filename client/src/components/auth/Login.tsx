@@ -6,7 +6,7 @@ import {TextField} from "@mui/material";
 import UserService from "../../service/userService";
 import AuthForm, {FieldInfo, fieldInfos, onInput} from "./AuthForm";
 import {AppState} from "../App";
-import config from "../../configs/config";
+import config from "../../config";
 import {formInputStyle} from "../../styles/authFormStyles";
 
 export interface LoginFieldInfoMap {

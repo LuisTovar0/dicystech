@@ -7,6 +7,11 @@ export default interface IConfigService {
   getLabSupportedCountries(callbacks?: AxiosCallbacks<string[]>): void;
 
   /**
+   * All components that are currently supported by robot labs.
+   */
+  getRobotSupportedComponents(callbacks?: AxiosCallbacks<string[]>): void;
+
+  /**
    * All countries that currently have Labs.
    */
   getLabCountries(callbacks?: AxiosCallbacks<string[]>): void;

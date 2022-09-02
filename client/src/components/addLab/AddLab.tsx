@@ -6,14 +6,14 @@ import {AppState, Elem, State} from "../App";
 import BaseComponent from "../auxiliar/BaseComponent";
 import {formInputStyle} from "../../styles/authFormStyles";
 import {addLabFormStyle, addLabStyle} from "../../styles/addLabStyles";
-import LabService from "../../service/labService";
 import INoIdRobotLabDto from "../../dto/lab/iNoIdLabDto";
 import ILabDto from "../../dto/lab/iLabDto";
 import RobotLabForm from "./RobotLabForm";
 import CyberLabForm from "./CyberLabForm";
-import config from "../../configs/config";
+import config from "../../config";
 import INoIdCyberLabDto from "../../dto/ICyberLabDto";
 import {AxiosResponse} from "axios";
+import dependencyInjector from "../../config/dependencyInjector";
 
 //#region interfaces
 export interface AddLabInfo {
@@ -81,7 +81,7 @@ export default function AddLab({topInfoState}: { topInfoState: AppState }) {
     addLabInfoSetter({...addLabInfo, attemptedSubmit: true});
     if (addLabInfo.error) return;
 
-    const service = new LabService();
+    const service = dependencyInjector.labService;
     switch (selectedLabType) {
       case possibleLabTypes.robot:
         service.addRobotLab(dto as INoIdRobotLabDto, {

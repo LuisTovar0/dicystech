@@ -12,16 +12,16 @@ import {
 } from "@mui/material";
 
 import {formInputStyle} from "../../styles/authFormStyles";
-import ConfigService from "../../service/configService";
 import {LabFormProps} from "./AddLab";
 import INoIdLabDto from "../../dto/lab/iNoIdLabDto";
+import dependencyInjector from "../../config/dependencyInjector";
 
 export default function RobotLabForm({topInfoState, addLabState}: LabFormProps) {
   const [topInfo, topInfoSetter] = topInfoState;
   const [addLabInfo, addLabInfoSetter] = addLabState;
 
   //#region fetch configurable information
-  const configService = new ConfigService();
+  const configService = dependencyInjector.configService;
 
   const [possibleCountries, setPossibleCountries] = useState<string[]>([]);
   const countriesAreFetched = () => possibleCountries.length !== 0;

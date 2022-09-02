@@ -1,16 +1,14 @@
 import axios, {AxiosResponse} from 'axios';
-import {Service} from 'typedi';
 
 import IUserService from "./iServices/iUserService";
 import CreateAccountDto from "../dto/user/createAccountDto";
-import config from "../configs/config";
+import config from "../config";
 
 export interface AxiosCallbacks<RespT> {
   then?: (result: AxiosResponse<RespT>) => void,
   catchEx?: (reason: any) => void
 }
 
-@Service()
 export default class UserService implements IUserService {
 
   static readonly baseUrl = `/api/user`;
