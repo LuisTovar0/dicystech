@@ -2,13 +2,13 @@ import {Service} from "typedi";
 import mongoose from 'mongoose';
 import {Db} from 'mongodb';
 
-import IDb from "../../../services/iRepos/iDb";
+import IDbGeneralConfig from "../../../services/iRepos/IDbGeneralConfig";
 import logger from "../../../core/loaders/logger";
-import config, {MongoConfig} from "../../../config";
+import config, {MongoConfig} from "../../../core/config";
 import {sleep} from "../../../services/utils";
 
 @Service()
-export default class MongoGeneralConfig implements IDb {
+export default class MongoGeneralConfig implements IDbGeneralConfig {
 
   connect(): void {
     this.connectMongo();

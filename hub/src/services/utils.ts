@@ -1,5 +1,5 @@
 import logger from "../core/loaders/logger";
-import config, {LdapConfig} from "../config";
+import config, {LdapConfig} from "../core/config";
 
 export const sleep = (ms: number, log?: boolean) => new Promise(resolve => {
   log ??= false;

@@ -3,7 +3,7 @@ import {Container} from "typedi";
 import {celebrate, Joi} from "celebrate";
 import {StaticController} from "../core/infra/baseController";
 import ILabService from "./iServices/iLabService";
-import config from "../config";
+import config from "../core/config";
 import INoIdLabDto from "../dto/iNoIdDto/iNoIdLabDto";
 import {dbIsConnected} from "./index";
 

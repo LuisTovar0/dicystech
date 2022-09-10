@@ -3,7 +3,7 @@ import {Container} from "typedi";
 import {celebrate, Joi} from "celebrate";
 import jwt from 'jsonwebtoken';
 
-import config from "../config";
+import config from "../core/config";
 import IUserService from "./iServices/iUserService";
 import {BaseController} from "../core/infra/baseController";
 import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
@@ -86,7 +86,7 @@ export default (app: Router) => {
           return ctrlr.response(403, 'token does not correspond to user');
 
         const newAccessToken = jwt.sign(user, config.api.jwt.accessSecret);
-        return ctrlr.k(newAccessToken);
+        return ctrlr.created(newAccessToken);
       } catch (e) {
         return ctrlr.handleException(e);
       }

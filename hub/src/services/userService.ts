@@ -1,6 +1,6 @@
 import {Inject, Service} from "typedi";
 
-import config from "../config";
+import config from "../core/config";
 import IUserRepo from "./iRepos/iUserRepo";
 import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
 import AuthenticationResult from "../dto/nonEntity/authenticationResult";

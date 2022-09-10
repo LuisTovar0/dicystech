@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response, Router} from 'express';
 import jwt from "jsonwebtoken";
 
-import config, {MongoConfig} from "../config";
+import config from "../core/config";
 import {StaticController} from "../core/infra/baseController";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";
 import debug from './debug.route';
@@ -40,7 +40,7 @@ export function authorization(req: Request, res: Response, next: NextFunction) {
 }
 
 export function dbIsConnected(req: Request, res: Response, next: NextFunction) {
-  if (config.dbType === 'mongo' && (config.db as MongoConfig).connected)
+  if (config.db.connected)
     next();
   else
     StaticController.response(res, 503, `The server isn't connected to the MongoDB database.`);

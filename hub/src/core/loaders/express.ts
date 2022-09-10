@@ -5,7 +5,7 @@ import celebrate from "celebrate";
 import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 
-import config from '../../config';
+import config from '../config';
 import routes from '../../controllers';
 import {StaticController} from "../infra/baseController";
 

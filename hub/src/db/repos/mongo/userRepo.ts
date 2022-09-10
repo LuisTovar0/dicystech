@@ -1,6 +1,6 @@
 import {Inject, Service} from "typedi";
 
-import config from "../../../config";
+import config from "../../../core/config";
 import {MongoRepo} from "../../../core/infra/repo";
 import IUserDto from "../../../dto/iUserDto";
 import IUserMapper from "../../../mappers/iMappers/iUserMapper";

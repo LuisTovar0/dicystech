@@ -2,7 +2,7 @@ import {Inject, Service} from "typedi";
 
 import {MongoRepo} from "../../../core/infra/repo";
 import ILabDataModel from "../../dataModel/iLabDataModel";
-import config from "../../../config";
+import config from "../../../core/config";
 import ILabMapper from "../../../mappers/iMappers/iLabMapper";
 import labSchema from "./schemas/labSchema";
 import ILabRepo from "../../../services/iRepos/iLabRepo";

@@ -1,6 +1,6 @@
 import {Inject, Service} from "typedi";
 
-import config from "../config";
+import config from "../core/config";
 import ILabService from "../controllers/iServices/iLabService";
 import ILabRepo from "./iRepos/iLabRepo";
 import ILabMapper from "../mappers/iMappers/iLabMapper";
