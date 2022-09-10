@@ -6,7 +6,7 @@ import IUserDto from "../../../dto/iUserDto";
 import IUserMapper from "../../../mappers/iMappers/iUserMapper";
 import IUserDataModel from "../../dataModel/iUserDataModel";
 import userSchema from "../mongo/schemas/userSchema";
-import IUserRepo from "../iRepos/iUserRepo";
+import IUserRepo from "../../../services/iRepos/iUserRepo";
 
 
 @Service()

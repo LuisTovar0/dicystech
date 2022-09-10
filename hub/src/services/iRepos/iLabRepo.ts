@@ -1,4 +1,4 @@
-import ILabDto from "../../../dto/iLabDto";
+import ILabDto from "../../dto/iLabDto";
 
 export default interface ILabRepo {
 

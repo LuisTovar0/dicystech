@@ -16,9 +16,11 @@ export default () => {
     Container.set('logger', Logger);
 
     // a class can only be set after its own dependencies are set
-    [config.deps.mappers,   // can only depend on each other (must be ordered)
+    [
+      config.deps.mappers,  // can only depend on each other (must be ordered)
       config.db.deps,       // repos and infrastructures, depend on mappers
-      config.deps.services  // depend on repos and on each other (must be ordered)
+      config.deps.services, // depend on repos and on each other (must be ordered)
+      {_: config.db.generalConfig}
     ].forEach((deps) => {
       Object.entries(deps).forEach(([, dep]) => {
         // load the @Service() class by its path

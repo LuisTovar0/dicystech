@@ -4,7 +4,7 @@ import {celebrate, Joi} from "celebrate";
 import jwt from 'jsonwebtoken';
 
 import config from "../config";
-import IUserService from "../services/iServices/iUserService";
+import IUserService from "./iServices/iUserService";
 import {BaseController} from "../core/infra/baseController";
 import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";

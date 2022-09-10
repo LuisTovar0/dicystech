@@ -1,6 +1,6 @@
 import * as assert from "assert";
 
-import ILdapService from "../../../src/services/iServices/iLdapService";
+import ILdapService from "../../../src/controllers/iServices/iLdapService";
 import LdapService from "../../../src/services/ldapService";
 
 describe(`Unit: LDAP Service`, async () => {

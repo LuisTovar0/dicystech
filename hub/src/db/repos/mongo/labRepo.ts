@@ -5,7 +5,7 @@ import ILabDataModel from "../../dataModel/iLabDataModel";
 import config from "../../../config";
 import ILabMapper from "../../../mappers/iMappers/iLabMapper";
 import labSchema from "./schemas/labSchema";
-import ILabRepo from "../iRepos/iLabRepo";
+import ILabRepo from "../../../services/iRepos/iLabRepo";
 import ILabDto from "../../../dto/iLabDto";
 
 @Service()

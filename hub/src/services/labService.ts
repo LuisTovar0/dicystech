@@ -1,8 +1,8 @@
 import {Inject, Service} from "typedi";
 
 import config from "../config";
-import ILabService from "./iServices/iLabService";
-import ILabRepo from "../db/repos/iRepos/iLabRepo";
+import ILabService from "../controllers/iServices/iLabService";
+import ILabRepo from "./iRepos/iLabRepo";
 import ILabMapper from "../mappers/iMappers/iLabMapper";
 import ILabDto from "../dto/iLabDto";
 import INoIdLabDto from "../dto/iNoIdDto/iNoIdLabDto";

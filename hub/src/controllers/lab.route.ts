@@ -2,7 +2,7 @@ import {Router} from "express";
 import {Container} from "typedi";
 import {celebrate, Joi} from "celebrate";
 import {StaticController} from "../core/infra/baseController";
-import ILabService from "../services/iServices/iLabService";
+import ILabService from "./iServices/iLabService";
 import config from "../config";
 import INoIdLabDto from "../dto/iNoIdDto/iNoIdLabDto";
 import {dbIsConnected} from "./index";

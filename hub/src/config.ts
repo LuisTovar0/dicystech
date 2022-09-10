@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import {SignOptions} from "jsonwebtoken";
 
 import logger from "./core/loaders/logger";
-import {NamePathMap} from "./core/loaders/dependencyInjector";
+import {NamePath, NamePathMap} from "./core/loaders/dependencyInjector";
 
 const env = process.env.ENV || 'development';
 if (['development', 'testing'].indexOf(env) !== -1 && !dotenv.config())
@@ -15,25 +15,30 @@ switch (dbType) {
   case "ldap":
     const orgDomain = (process.env.LDAP_DOMAIN as string).trim();
     const domRegex = /^((?!-))(xn--)?[a-z\d][a-z\d-_]{0,61}[a-z\d]?\.(xn--)?([a-z\d\-]{1,61}|[a-z\d-]{1,30}\.[a-z]{2,})$/;
-    if (!domRegex.test(orgDomain)) throw new Error('The provided organization domain is not valid.');
+    if (!domRegex.test(orgDomain))
+      throw new Error('The provided organization domain is not valid.');
     dbConfig = {
       adminPwd: (process.env.LDAP_ADMIN_PASSWORD as string).trim(),
       orgName: (process.env.LDAP_ORGANISATION as string).trim(),
       urls: (process.env.HUB_LDAP_URLS as string).trim().split(','),
       orgDomain,
-      deps: {
-        ldap: {
-          name: 'Ldap',
-          path: './ldap'
-        },
+      deps: {},
+      generalConfig: {
+        name: 'LdapGeneralConfig',
+        path: '../../db/repos/ldap/ldapGeneralConfig'
       }
     } as LdapConfig;
     break;
-  case"mongo":
-    if (!process.env.HUB_MONGODB_URL) logger.error(`You should define a MONGODB_URL environment variable.`);
+  case "mongo":
+    if (!process.env.HUB_MONGODB_URL)
+      logger.error(`A HUB_MONGODB_URL environment variable should be defined.`);
     dbConfig = {
       url: 'mongodb://' + (process.env.HUB_MONGODB_URL || 'mongo:27017'),
       connected: false,
+      generalConfig: {
+        name: 'MongoGeneralConfig',
+        path: '../../db/repos/mongo/mongoGeneralConfig'
+      },
       deps: {
         user: {
           name: 'MongoUserRepo',
@@ -89,16 +94,19 @@ export default {
   }
 };
 
-export interface LdapConfig {
-  adminPwd: string,
-  orgDomain: string,
-  deps: NamePathMap,
-  urls: string[],
-  orgName: string,
+interface DbConfig {
+  deps: NamePathMap;
+  generalConfig: NamePath;
 }
 
-export interface MongoConfig {
-  url: string,
-  connected: boolean,
-  deps: NamePathMap,
+export interface LdapConfig extends DbConfig {
+  adminPwd: string;
+  orgDomain: string;
+  urls: string[];
+  orgName: string;
+}
+
+export interface MongoConfig extends DbConfig {
+  url: string;
+  connected: boolean;
 }

@@ -1,11 +1,11 @@
 import {Inject, Service} from "typedi";
 
 import config from "../config";
-import IUserRepo from "../db/repos/iRepos/iUserRepo";
+import IUserRepo from "./iRepos/iUserRepo";
 import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
 import AuthenticationResult from "../dto/nonEntity/authenticationResult";
 import IUserMapper from "../mappers/iMappers/iUserMapper";
-import IUserService from "./iServices/iUserService";
+import IUserService from "../controllers/iServices/iUserService";
 import User from "../domain/user/user";
 import UniqueEntityID from "../core/domain/uniqueEntityID";
 import {NotFoundError} from "../core/logic/errors";
