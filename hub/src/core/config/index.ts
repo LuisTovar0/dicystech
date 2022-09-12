@@ -4,10 +4,18 @@ import {NamePathMap} from "../loaders/dependencyInjector";
 import dbConfig from "./db";
 
 const env = process.env.ENV || 'development';
-if (['development', 'testing'].indexOf(env) !== -1 && !dotenv.config())
-  throw new Error(`⚠️  Couldn't find .env file. It must be present in ${env} ⚠️`);
+// if the environment is production, env vars will be injected by Docker
+if (['development', 'testing'].indexOf(env) !== -1 && !dotenv.config({path: '../.env.dev'}))
+  throw new Error(`\u{26A0} Couldn't find .env file. It must be present in ${env} \u{26A0}`);
+
+['HUB_PORT', 'HUB_ACCESS_TOKEN_SECRET', 'HUB_REFRESH_TOKEN_SECRET', 'HUB_DB_TYPE']
+  .forEach(value => {
+    if (!process.env[value]) throw new Error(`\u{26A0} ${value} environment variable must be defined \u{26A0}`);
+  });
 
 export default {
+
+  env,
 
   api: {
     prefix: '/api',
