@@ -11,4 +11,7 @@ const config = {
   },
 };
 
+if (!config.backendUrl)
+  throw new Error(`Environment variables could not be defined.`);
+
 export default config;

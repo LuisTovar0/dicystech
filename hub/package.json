@@ -2,10 +2,11 @@
   "name": "dicystech-hub",
   "version": "0.1",
   "scripts": {
-      "start": "tsc & node build/app.js",
+      "start": "node build/app.js",
       "ts-start": "ts-node ./src/app.ts",
       "dev": "concurrently \"nodemon build/app.js\" \"tsc -w\"",
       "build": "tsc",
+      "prestart": "npm run build",
       "test": "mocha -r ts-node/register 'test/**/*.test.ts'"
   },
   "dependencies": {
