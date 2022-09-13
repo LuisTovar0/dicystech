@@ -1,4 +1,4 @@
-export default interface IJsonUserDto {
-  email: string,
-  password: string
+import INoIdUserDto from "../noIdDto/iNoIdUserDto";
+
+export default interface IJsonUserDto extends INoIdUserDto {
 }

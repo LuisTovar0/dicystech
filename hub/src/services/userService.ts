@@ -3,13 +3,13 @@ import {Inject, Service} from "typedi";
 import config from "../core/config";
 import IUserRepo from "./iRepos/iUserRepo";
 import IJsonUserDto from "../dto/jsonDto/iJsonUserDto";
-import IAuthenticationResult from "../dto/nonEntity/iAuthenticationResult";
+import IAuthenticationResult from "../dto/jsonDto/iAuthenticationResult";
 import IUserMapper from "../mappers/iMappers/iUserMapper";
 import IUserService from "../controllers/iServices/iUserService";
 import User from "../domain/user/user";
 import UniqueEntityID from "../core/domain/uniqueEntityID";
 import {NotFoundError} from "../core/logic/errors";
-import IUserHiddenPassword from "../dto/iUserHiddenPwd";
+import IUserHiddenPassword from "../dto/jsonDto/iUserHiddenPwd";
 import IUserDto from "../dto/iUserDto";
 
 @Service()

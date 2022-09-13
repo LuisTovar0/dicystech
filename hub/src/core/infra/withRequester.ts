@@ -1,4 +1,4 @@
-import IUserHiddenPassword from "../../dto/iUserHiddenPwd";
+import IUserHiddenPassword from "../../dto/jsonDto/iUserHiddenPwd";
 
 export default interface WithRequester {
   requester:IUserHiddenPassword

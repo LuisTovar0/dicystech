@@ -1,6 +1,6 @@
 import IJsonUserDto from "../../dto/jsonDto/iJsonUserDto";
-import IAuthenticationResult from "../../dto/nonEntity/iAuthenticationResult";
-import IUserHiddenPassword from "../../dto/iUserHiddenPwd";
+import IAuthenticationResult from "../../dto/jsonDto/iAuthenticationResult";
+import IUserHiddenPassword from "../../dto/jsonDto/iUserHiddenPwd";
 
 export default interface IUserService {
 

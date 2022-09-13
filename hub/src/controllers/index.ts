@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 import config from "../core/config";
 import {StaticController} from "../core/infra/baseController";
-import IUserHiddenPassword from "../dto/iUserHiddenPwd";
+import IUserHiddenPassword from "../dto/jsonDto/iUserHiddenPwd";
 import debug from './debug.route';
 import conf from "./config.route";
 import user from './user.route';

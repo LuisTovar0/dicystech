@@ -2,9 +2,10 @@ import {Service} from "typedi";
 import {Client, createClient, SearchOptions} from "ldapjs";
 
 import config, {LdapConfig} from "../config";
-import {ResultCallback} from "../../dto/jsonDto/types";
 import {orgUrlInDc, sleep} from "../../services/utils";
 import Logger from "../../core/loaders/logger";
+
+type ResultCallback = (result: Object | Error) => void;
 
 @Service()
 export default class Ldap {

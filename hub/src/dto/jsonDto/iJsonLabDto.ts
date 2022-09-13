@@ -1,7 +1,5 @@
 import WithRequester from "../../core/infra/withRequester";
+import INoIdLabDto from "../noIdDto/iNoIdLabDto";
 
-export default interface IJsonLabDto extends WithRequester {
-  name: string;
-  country: string;
-  components: string[];
+export default interface IJsonLabDto extends INoIdLabDto, WithRequester {
 }

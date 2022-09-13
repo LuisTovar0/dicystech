@@ -4,7 +4,7 @@ import IUserDataModel from "../db/dataModel/iUserDataModel";
 import User from "../domain/user/user";
 import IUserDto from "../dto/iUserDto";
 import UniqueEntityID from "../core/domain/uniqueEntityID";
-import iUserHiddenPwd from "../dto/iUserHiddenPwd";
+import iUserHiddenPwd from "../dto/jsonDto/iUserHiddenPwd";
 
 @Service()
 export default class UserMapper implements IUserMapper {

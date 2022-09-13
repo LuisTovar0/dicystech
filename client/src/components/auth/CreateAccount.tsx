@@ -22,7 +22,7 @@ export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}])|(([a-zA-Z\-\d]+\.)+[a-zA-Z]{2,}))$/;
   const emailError = !emailRegex.test(fields.email.value);
   const pwdRegex = /^(?=.*[A-Z].*[A-Z])(?=.*[!@#$&*])(?=.*\d.*\d)(?=.*[a-z].*[a-z].*[a-z]).{8}$/;
-  const pwdError = !pwdRegex.test(fields.password.value);
+  const pwdError = /*!pwdRegex.test(fields.password.value)*/false;
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
   function register(setMessage: Dispatch<SetStateAction<string>>) {
