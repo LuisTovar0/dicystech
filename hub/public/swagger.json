@@ -142,6 +142,7 @@
         },
         "/api/lab": {
             "post": {
+                "description": "Requires an access JWT in the Authentication header",
                 "operationId": "AddLab",
                 "responses": {
                     "201": {
@@ -171,6 +172,7 @@
                 "tags": ["Lab"]
             },
             "get": {
+                "description": "Requires an access JWT in the Authentication header",
                 "operationId": "GetAllLabs",
                 "responses": {
                     "200": {
@@ -192,6 +194,7 @@
         },
         "/api/lab/{name}": {
             "get": {
+                "description": "Requires an access JWT in the Authentication header",
                 "operationId": "GetLabByName",
                 "responses": {
                     "200": {
@@ -213,6 +216,7 @@
         },
         "/api/lab/bycountry/{country}": {
             "get": {
+                "description": "Requires an access JWT in the Authentication header",
                 "operationId": "GetLabsByCountry",
                 "responses": {
                     "200": {
@@ -234,6 +238,7 @@
         },
         "/api/lab/bycomponents": {
             "post": {
+                "description": "Requires an access JWT in the Authentication header",
                 "operationId": "GetLabsByComponents",
                 "responses": {
                     "200": {
