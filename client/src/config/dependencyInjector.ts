@@ -13,8 +13,8 @@ interface Dependencies {
   userService: IUserService;
 }
 
-export default {
-  configService: new ConfigService(),
-  labService: new LabService(),
-  userService: new UserService()
-} as Dependencies;
+const configService: IConfigService = new ConfigService();
+const userService: IUserService = new UserService();
+const labService: ILabService = new LabService(userService);
+
+export default {configService, labService, userService} as Dependencies;

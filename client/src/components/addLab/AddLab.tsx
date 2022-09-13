@@ -78,6 +78,7 @@ export default function AddLab({topInfoState}: { topInfoState: AppState }) {
 
   //#region submit
   const onSubmit = () => {
+    console.log('submit');
     addLabInfoSetter({...addLabInfo, attemptedSubmit: true});
     if (addLabInfo.error) return;
 
@@ -85,7 +86,8 @@ export default function AddLab({topInfoState}: { topInfoState: AppState }) {
     switch (selectedLabType) {
       case possibleLabTypes.robot:
         service.addRobotLab(dto as INoIdRobotLabDto, {
-          then: (r: AxiosResponse<ILabDto>) => topInfoSetter({...topInfo, snackbar: snackbar(r.data.name)})
+          then: (r: AxiosResponse<ILabDto>) => topInfoSetter({...topInfo, snackbar: snackbar(r.data.name)}),
+          catchEx: r => console.log('An error occurred', r)
         });
         break;
       case possibleLabTypes.cyber:

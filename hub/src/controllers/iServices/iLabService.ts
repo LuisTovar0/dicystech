@@ -1,9 +1,9 @@
-import INoIdLabDto from "../../dto/iNoIdDto/iNoIdLabDto";
+import IJsonLabDto from "../../dto/jsonDto/iJsonLabDto";
 import ILabDto from "../../dto/iLabDto";
 
 export default interface ILabService {
 
-  addLab(labDto: INoIdLabDto): Promise<ILabDto>;
+  addLab(labDto: IJsonLabDto): Promise<ILabDto>;
 
   getLabByName(name: string): Promise<ILabDto>;
 

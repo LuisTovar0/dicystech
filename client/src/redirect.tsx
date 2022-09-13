@@ -16,10 +16,7 @@ export default function Redirect({topInfoState}: { topInfoState: AppState }) {
     else {
       // try to refresh token. will succeed if the user has the refreshJwt cookie
       service.refreshToken({
-        then: r => {
-          config.accessJwt = r.data as string;
-          navigate('/' + config.routes.home);
-        },
+        then: () => navigate('/' + config.routes.home),
         catchEx: r => {
           console.log(r);
           if (r.response.status === 403) alert('your session expired');

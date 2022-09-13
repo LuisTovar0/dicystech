@@ -25,7 +25,26 @@ export default class UserService implements IUserService {
 
   refreshToken(callbacks?: AxiosCallbacks<string>): void {
     axios.get<string>(`${config.backendUrl + UserService.baseUrl}/refreshToken`)
-      .then(callbacks?.then).catch(callbacks?.catchEx);
+      .then(r => {
+        config.accessJwt = r.data;
+        if (callbacks && callbacks.then)
+          callbacks?.then(r);
+      }).catch(callbacks?.catchEx);
+  }
+
+  requestWithAuth<T>(req: (accessJwt: string, callbacks?: AxiosCallbacks<T>) => void, callbacks?: AxiosCallbacks<T>): void {
+    const refreshTokenAndTryRequest = () =>
+      this.refreshToken({
+        then: ({data}) => req(data),
+        catchEx: callbacks?.catchEx
+      });
+
+    if (!config.accessJwt)
+      refreshTokenAndTryRequest();
+    else req(config.accessJwt, {
+      ...callbacks,
+      catchEx: refreshTokenAndTryRequest
+    });
   }
 
 }

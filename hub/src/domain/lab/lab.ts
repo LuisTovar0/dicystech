@@ -3,7 +3,7 @@ import LabCountry from "./labCountry";
 import LabComponents from "./labComponents";
 import {AggregateRoot} from "../../core/domain/aggregateRoot";
 import UniqueEntityID from "../../core/domain/uniqueEntityID";
-import INoIdLabDto from "../../dto/iNoIdDto/iNoIdLabDto";
+import IJsonLabDto from "../../dto/jsonDto/iJsonLabDto";
 
 interface LabProps {
   name: LabName;
@@ -17,7 +17,7 @@ export default class Lab extends AggregateRoot<LabProps> {
     super(props, id);
   }
 
-  public static create(dto: INoIdLabDto, id?: UniqueEntityID): Lab {
+  public static create(dto: IJsonLabDto, id?: UniqueEntityID): Lab {
     const name: LabName = LabName.create(dto.name);
     const country: LabCountry = LabCountry.create(dto.country);
     const components: LabComponents = LabComponents.create(dto.components);

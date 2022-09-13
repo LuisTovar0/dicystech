@@ -5,7 +5,7 @@ import ILabService from "../controllers/iServices/iLabService";
 import ILabRepo from "./iRepos/iLabRepo";
 import ILabMapper from "../mappers/iMappers/iLabMapper";
 import ILabDto from "../dto/iLabDto";
-import INoIdLabDto from "../dto/iNoIdDto/iNoIdLabDto";
+import IJsonLabDto from "../dto/jsonDto/iJsonLabDto";
 import {NotFoundError} from "../core/logic/errors";
 import Lab from "../domain/lab/lab";
 import LabCountry from "../domain/lab/labCountry";
@@ -22,7 +22,7 @@ export default class LabService implements ILabService {
   ) {
   }
 
-  async addLab(labDto: INoIdLabDto): Promise<ILabDto> {
+  async addLab(labDto: IJsonLabDto): Promise<ILabDto> {
     const lab = Lab.create(labDto);
     return await this.repo.save(this.mapper.domainToDTO(lab));
   }

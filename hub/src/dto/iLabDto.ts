@@ -1,5 +1,5 @@
-import INoIdLabDto from "./iNoIdDto/iNoIdLabDto";
+import IJsonLabDto from "./jsonDto/iJsonLabDto";
 import WithId from "../core/infra/withId";
 
-export default interface ILabDto extends INoIdLabDto, WithId {
+export default interface ILabDto extends IJsonLabDto, WithId {
 }

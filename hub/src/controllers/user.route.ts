@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 import config from "../core/config";
 import IUserService from "./iServices/iUserService";
 import {BaseController} from "../core/infra/baseController";
-import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
+import IJsonUserDto from "../dto/jsonDto/iJsonUserDto";
 import IUserHiddenPassword from "../dto/iUserHiddenPwd";
 import {dbIsConnected} from "./index";
 
@@ -29,7 +29,7 @@ export default (app: Router) => {
     async (req, res) => {
       const ctrl = new BaseController(req, res);
       try {
-        const user = await service.addUser(req.body as INoIdUserDto);
+        const user = await service.addUser(req.body as IJsonUserDto);
         // log in
         const accessJwt = jwt.sign(user, config.api.jwt.accessSecret, config.api.jwt.signOptions);
         const refreshToken = jwt.sign(user, config.api.jwt.refreshSecret, config.api.jwt.signOptions);

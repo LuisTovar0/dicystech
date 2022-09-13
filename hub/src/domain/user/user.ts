@@ -2,7 +2,7 @@ import UserEmail from "./userEmail";
 import UserPassword from "./UserPassword";
 import {AggregateRoot} from "../../core/domain/aggregateRoot";
 import UniqueEntityID from "../../core/domain/uniqueEntityID";
-import INoIdUserDto from "../../dto/iNoIdDto/iNoIdUserDto";
+import IJsonUserDto from "../../dto/jsonDto/iJsonUserDto";
 
 interface UserProps {
   email: UserEmail,
@@ -15,7 +15,7 @@ export default class User extends AggregateRoot<UserProps> {
     super(props, id);
   }
 
-  public static create(dto: INoIdUserDto, id?: UniqueEntityID): User {
+  public static create(dto: IJsonUserDto, id?: UniqueEntityID): User {
     const email: UserEmail = UserEmail.create(dto.email);
     const password: UserPassword = UserPassword.create(dto.password);
     return new User({email, password}, id);

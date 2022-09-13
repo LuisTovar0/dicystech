@@ -4,8 +4,8 @@ import {celebrate, Joi} from "celebrate";
 import {StaticController} from "../core/infra/baseController";
 import ILabService from "./iServices/iLabService";
 import config from "../core/config";
-import INoIdLabDto from "../dto/iNoIdDto/iNoIdLabDto";
-import {dbIsConnected} from "./index";
+import IJsonLabDto from "../dto/jsonDto/iJsonLabDto";
+import {authorization, dbIsConnected} from "./index";
 
 const {k, created, handleException} = StaticController;
 
@@ -26,10 +26,11 @@ export default (app: Router) => {
         components: Joi.array()
       }
     }),
+    authorization, // this changes the request body, adds requester
     async (req, res) => {
       req.body.components ??= [];
       try {
-        const result = await service.addLab(req.body as INoIdLabDto);
+        const result = await service.addLab(req.body as IJsonLabDto);
         return created(res, result);
       } catch (e) {
         return handleException(res, e);
@@ -39,6 +40,7 @@ export default (app: Router) => {
 
   route.get('',
     dbIsConnected,
+    authorization,
     async (req, res) => {
       try {
         const result = await service.getAllLabs();
@@ -53,6 +55,7 @@ export default (app: Router) => {
     celebrate({
       params: {name: Joi.string().required()}
     }),
+    authorization,
     async (req, res) => {
       try {
         const result = await service.getLabByName(req.params.name as string);
@@ -67,6 +70,7 @@ export default (app: Router) => {
     celebrate({
       params: {country: Joi.string().required()}
     }),
+    authorization,
     async (req, res) => {
       try {
         const result = await service.getLabsByCountry(req.params.country as string);

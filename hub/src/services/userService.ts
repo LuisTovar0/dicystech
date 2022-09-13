@@ -2,8 +2,8 @@ import {Inject, Service} from "typedi";
 
 import config from "../core/config";
 import IUserRepo from "./iRepos/iUserRepo";
-import INoIdUserDto from "../dto/iNoIdDto/iNoIdUserDto";
-import AuthenticationResult from "../dto/nonEntity/authenticationResult";
+import IJsonUserDto from "../dto/jsonDto/iJsonUserDto";
+import IAuthenticationResult from "../dto/nonEntity/iAuthenticationResult";
 import IUserMapper from "../mappers/iMappers/iUserMapper";
 import IUserService from "../controllers/iServices/iUserService";
 import User from "../domain/user/user";
@@ -34,7 +34,7 @@ export default class UserService implements IUserService {
     return user;
   }
 
-  async addUser(userDto: INoIdUserDto): Promise<IUserHiddenPassword> {
+  async addUser(userDto: IJsonUserDto): Promise<IUserHiddenPassword> {
     const user = User.create(userDto);
     const persistedDto = await this.repo.save(this.mapper.domainToDTO(user));
     return this.mapper.dtoToHiddenPwdDto(persistedDto);
@@ -52,7 +52,7 @@ export default class UserService implements IUserService {
     return this.mapper.dtoToHiddenPwdDto(persistedDto);
   }
 
-  async verifyPassword(email: string, pwd: string): Promise<AuthenticationResult> {
+  async verifyPassword(email: string, pwd: string): Promise<IAuthenticationResult> {
     const {password, domainId} = await this.getUser(email);
     return {passwordIsCorrect: password.trim() === pwd.trim(), domainId};
   }

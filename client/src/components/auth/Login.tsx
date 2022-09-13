@@ -25,7 +25,6 @@ export function Login({topInfoState}: { topInfoState: AppState }) {
     service.login(fields.email.value, encryptedPassword,
       {
         then: r => {
-          console.log("nasj");
           config.accessJwt = r.data as string;
           navigate('/' + config.routes.home);
         },

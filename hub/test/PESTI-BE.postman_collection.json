@@ -54,12 +54,11 @@
               }
             },
             "url": {
-              "raw": "{{be}}/api/user/authenticate",
+              "raw": "{{be}}/user/authenticate",
               "host": [
                 "{{be}}"
               ],
               "path": [
-                "api",
                 "user",
                 "authenticate"
               ]
@@ -93,12 +92,11 @@
               }
             },
             "url": {
-              "raw": "{{be}}/api/user",
+              "raw": "{{be}}/user",
               "host": [
                 "{{be}}"
               ],
               "path": [
-                "api",
                 "user"
               ]
             }
@@ -170,12 +168,11 @@
               }
             },
             "url": {
-              "raw": "{{be}}/api/user",
+              "raw": "{{be}}/user",
               "host": [
                 "{{be}}"
               ],
               "path": [
-                "api",
                 "user"
               ]
             }
@@ -230,12 +227,11 @@
               }
             },
             "url": {
-              "raw": "{{be}}/api/user/authenticate",
+              "raw": "{{be}}/user/authenticate",
               "host": [
                 "{{be}}"
               ],
               "path": [
-                "api",
                 "user",
                 "authenticate"
               ]
@@ -253,7 +249,7 @@
                   "\r",
                   "pm.test(`Response status is OK`, () => pm.response.to.have.status(200));\r",
                   "\r",
-                  "// the newly received tokens won't be equal to the ones gotten at register because they are created with timestamps, which impedes the back-end from generating any two identical tokens\r",
+                  "// the newly received tokens won't be equal to the ones gotten at register because they are created with timestamps, which prevents the back-end from generating any two identical tokens\r",
                   "\r",
                   "const jwtRegex = /^([A-Za-z\\d-_]*\\.){2}[A-Za-z\\d-_]*$/;\r",
                   "pm.test(`Received access JWT exists and is valid`, () => {\r",
@@ -287,12 +283,11 @@
               }
             },
             "url": {
-              "raw": "{{be}}/api/user/authenticate",
+              "raw": "{{be}}/user/authenticate",
               "host": [
                 "{{be}}"
               ],
               "path": [
-                "api",
                 "user",
                 "authenticate"
               ]
@@ -327,14 +322,112 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{be}}/api/user/refreshToken",
+              "raw": "{{be}}/user/refreshToken",
               "host": [
                 "{{be}}"
               ],
               "path": [
-                "api",
                 "user",
                 "refreshToken"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Authorization success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response status is OK', () => pm.response.to.have.status(200))"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessJwt}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{be}}/debug/testauthorization",
+              "host": [
+                "{{be}}"
+              ],
+              "path": [
+                "debug",
+                "testauthorization"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Authorization header missing",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response status is Bad Request', () => pm.response.to.have.status(400))"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{be}}/debug/testauthorization",
+              "host": [
+                "{{be}}"
+              ],
+              "path": [
+                "debug",
+                "testauthorization"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Authorization invalid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Response status is Forbidden', () => pm.response.to.have.status(403))"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "1234ABCD",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{be}}/debug/testauthorization",
+              "host": [
+                "{{be}}"
+              ],
+              "path": [
+                "debug",
+                "testauthorization"
               ]
             }
           },
@@ -370,12 +463,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{be}}/api/config/allcountries",
+              "raw": "{{be}}/config/allcountries",
               "host": [
                 "{{be}}"
               ],
               "path": [
-                "api",
                 "config",
                 "allcountries"
               ]
@@ -408,7 +500,13 @@
               ],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessJwt}}",
+                    "type": "text"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "{\r\n    \"country\": \"Greece\"\r\n}",
@@ -419,12 +517,11 @@
                   }
                 },
                 "url": {
-                  "raw": "{{be}}/api/lab",
+                  "raw": "{{be}}/lab",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab"
                   ]
                 }
@@ -471,12 +568,11 @@
                   }
                 },
                 "url": {
-                  "raw": "{{be}}/api/lab",
+                  "raw": "{{be}}/lab",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab"
                   ]
                 }
@@ -523,12 +619,11 @@
                   }
                 },
                 "url": {
-                  "raw": "{{be}}/api/lab",
+                  "raw": "{{be}}/lab",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab"
                   ]
                 }
@@ -575,12 +670,11 @@
                   }
                 },
                 "url": {
-                  "raw": "{{be}}/api/lab",
+                  "raw": "{{be}}/lab",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab"
                   ]
                 }
@@ -620,7 +714,13 @@
               ],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessJwt}}",
+                    "type": "text"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "{\r\n    \"name\": \"{{lab_name1}}\",\r\n    \"country\": \"{{lab_country1}}\",\r\n    \"components\":[\"LED\", \"Light Sensor\"]\r\n}",
@@ -631,12 +731,11 @@
                   }
                 },
                 "url": {
-                  "raw": "{{be}}/api/lab",
+                  "raw": "{{be}}/lab",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab"
                   ]
                 }
@@ -673,14 +772,19 @@
               ],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessJwt}}",
+                    "type": "text"
+                  }
+                ],
                 "url": {
-                  "raw": "{{be}}/api/lab",
+                  "raw": "{{be}}/lab",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab"
                   ]
                 }
@@ -711,14 +815,19 @@
               ],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessJwt}}",
+                    "type": "text"
+                  }
+                ],
                 "url": {
-                  "raw": "{{be}}/api/lab/{{lab_name1}}",
+                  "raw": "{{be}}/lab/{{lab_name1}}",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab",
                     "{{lab_name1}}"
                   ]
@@ -742,14 +851,19 @@
               ],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessJwt}}",
+                    "type": "text"
+                  }
+                ],
                 "url": {
-                  "raw": "{{be}}/api/lab/abc123",
+                  "raw": "{{be}}/lab/abc123",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab",
                     "abc123"
                   ]
@@ -781,14 +895,19 @@
               ],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessJwt}}",
+                    "type": "text"
+                  }
+                ],
                 "url": {
-                  "raw": "{{be}}/api/lab/bycountry/{{lab_country1}}",
+                  "raw": "{{be}}/lab/bycountry/{{lab_country1}}",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab",
                     "bycountry",
                     "{{lab_country1}}"
@@ -813,14 +932,19 @@
               ],
               "request": {
                 "method": "GET",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessJwt}}",
+                    "type": "text"
+                  }
+                ],
                 "url": {
-                  "raw": "{{be}}/api/lab/bycountry/abc123",
+                  "raw": "{{be}}/lab/bycountry/abc123",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab",
                     "bycountry",
                     "abc123"
@@ -853,7 +977,13 @@
               ],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessJwt}}",
+                    "type": "text"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "[\"LED\", \"Light Sensor\"]",
@@ -864,12 +994,11 @@
                   }
                 },
                 "url": {
-                  "raw": "{{be}}/api/lab/getbycomponents",
+                  "raw": "{{be}}/lab/getbycomponents",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab",
                     "getbycomponents"
                   ]
@@ -893,7 +1022,13 @@
               ],
               "request": {
                 "method": "POST",
-                "header": [],
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessJwt}}",
+                    "type": "text"
+                  }
+                ],
                 "body": {
                   "mode": "raw",
                   "raw": "[\r\n    \"Strange Component\"\r\n]",
@@ -904,12 +1039,11 @@
                   }
                 },
                 "url": {
-                  "raw": "{{be}}/api/lab/getbycomponents",
+                  "raw": "{{be}}/lab/getbycomponents",
                   "host": [
                     "{{be}}"
                   ],
                   "path": [
-                    "api",
                     "lab",
                     "getbycomponents"
                   ]
