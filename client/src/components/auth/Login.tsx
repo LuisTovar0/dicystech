@@ -2,10 +2,11 @@ import React, {Dispatch, SetStateAction} from "react";
 import {useNavigate} from "react-router-dom";
 import crypto from "crypto-js";
 import {TextField} from "@mui/material";
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 import UserService from "../../service/userService";
 import AuthForm, {FieldInfo, fieldInfos, onInput} from "./AuthForm";
-import {AppState} from "../App";
+import {AppStateProps} from "../App";
 import config from "../../config";
 import {formInputStyle} from "../../styles/authFormStyles";
 
@@ -14,7 +15,7 @@ export interface LoginFieldInfoMap {
   password: FieldInfo
 }
 
-export function Login({topInfoState}: { topInfoState: AppState }) {
+export function Login({topInfoState}: AppStateProps) {
   const navigate = useNavigate();
   const fields = fieldInfos({email: 'E-mail', password: 'Password'}) as unknown as LoginFieldInfoMap;
 
@@ -39,7 +40,7 @@ export function Login({topInfoState}: { topInfoState: AppState }) {
   return (
     <AuthForm
       topInfoState={topInfoState} formName={'Log In'} onClick={login}
-      alternativeOpt={{route: '/createAccount', description: 'Create Account'}}
+      alternativeOpt={{route: '/createAccount', description: 'Create Account', icon: <PersonAddAltIcon/>}}
       form={<>
         <TextField
           style={formInputStyle}

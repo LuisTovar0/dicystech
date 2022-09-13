@@ -133,5 +133,5 @@ export default function AddLab({topInfoState}: { topInfoState: AppState }) {
           </div>
           : null}
       </div>
-    </div>} topState={topInfoState} pageName="Add Lab"/>;
+    </div>} topInfoState={topInfoState} pageName="Add Lab"/>;
 };

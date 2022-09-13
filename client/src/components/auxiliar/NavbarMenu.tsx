@@ -10,14 +10,14 @@ export default function NavbarMenu({options}: { options: NavbarOption[]; }) {
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
-  const optionsToMenuItems = (opts: NavbarOption[]) =>
-    opts.map((o, i) => <MenuItem key={i} onClick={e => {
+  const optionToMenuItem = (o: NavbarOption, i: number) =>
+    <MenuItem key={i} onClick={e => {
       handleClose();
       o.handler(e);
     }}>
       {o.icon}
       <Typography> {o.name}</Typography>
-    </MenuItem>);
+    </MenuItem>;
 
   return (<>
     <IconButton onClick={handleClick} color="secondary">
@@ -29,7 +29,7 @@ export default function NavbarMenu({options}: { options: NavbarOption[]; }) {
       onClose={handleClose}
       MenuListProps={{'aria-labelledby': 'basic-button',}}
     >
-      {optionsToMenuItems(options)}
+      {options.map(optionToMenuItem)}
     </Menu>
   </>);
 }

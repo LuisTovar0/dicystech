@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {Dispatch, FormEvent, SetStateAction, useState} from "react";
-import {Paper, Typography} from "@mui/material";
+import {ListItemIcon, Paper, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 
 import {AppInfo, AppState, Elem} from "../App";
@@ -13,6 +13,7 @@ export interface FormProps {
   alternativeOpt: {
     route: string,
     description: string,
+    icon?: Elem
   },
   onClick: (setMessage: Dispatch<SetStateAction<string>>) => void;
 }
@@ -52,7 +53,8 @@ export default function AuthForm({topInfoState, formName, form, alternativeOpt, 
     pageName: formName,
     options: [{
       name: alternativeOpt.description,
-      handler: () => navigate(alternativeOpt.route)
+      handler: () => navigate(alternativeOpt.route),
+      icon: alternativeOpt.icon ? <ListItemIcon>{alternativeOpt.icon}</ListItemIcon> : undefined
     }]
   } as AppInfo;
   const [topInfo, setTopInfo] = topInfoState;

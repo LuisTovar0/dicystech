@@ -2,10 +2,12 @@ import React, {Dispatch, SetStateAction, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import crypto from 'crypto-js';
 import InfoIcon from '@mui/icons-material/Info';
+import LoginIcon from '@mui/icons-material/Login';
+import {Fade, IconButton, TextField, Tooltip} from "@mui/material";
+
 import AuthForm, {fieldInfos, onInput} from "./AuthForm";
 import {AppState} from "../App";
 import config from "../../config";
-import {IconButton, TextField, Tooltip} from "@mui/material";
 import {formInputStyle} from "../../styles/authFormStyles";
 import {LoginFieldInfoMap} from "./Login";
 import dependencyInjector from "../../config/dependencyInjector";
@@ -44,10 +46,13 @@ export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
     );
   }
 
+  const tooltipText = "Must have at least 8 characters length, 2 upper case letters," +
+    " 3 lower case letters, 1 special character and 2 numerals.";
+
   return (
     <AuthForm
       formName={'Create Account'} topInfoState={topInfoState} onClick={register}
-      alternativeOpt={{route: '/login', description: 'Log In'}}
+      alternativeOpt={{route: '/login', description: 'Log In', icon: <LoginIcon/>}}
       form={<>
         <TextField
           style={formInputStyle} variant="standard" helperText={emailError && attemptedSubmit ? 'Invalid email.' : null}
@@ -59,8 +64,7 @@ export function CreateAccount({topInfoState}: { topInfoState: AppState }) {
             variant="standard" label="Password" type="password" value={fields.password.value}
             error={pwdError && attemptedSubmit} onInput={event => onInput(event, fields.password)}
           ></TextField>
-          <Tooltip title={"Must have at least 8 characters length, 2 upper case letters, 3 lower case letters, 1 " +
-            "special character and 2 numerals."}>
+          <Tooltip title={tooltipText} arrow TransitionComponent={Fade}>
             <IconButton>
               <InfoIcon/>
             </IconButton>

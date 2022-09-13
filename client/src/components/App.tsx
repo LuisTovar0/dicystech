@@ -30,6 +30,10 @@ export interface NavBarOption {
 export type State<T> = [T, React.Dispatch<React.SetStateAction<T>>];
 export type AppState = State<AppInfo>;
 
+export interface AppStateProps {
+  topInfoState: AppState;
+}
+
 function App() {
   const topInfoState = useState<AppInfo>({pageName: '', options: [], loading: false});
   const [{pageName, options, snackbar, loading}] = topInfoState;
@@ -52,7 +56,7 @@ function App() {
           <Route index element={<Redirect topInfoState={topInfoState}/>}/>
           <Route path={config.routes.login} element={<Login topInfoState={topInfoState}/>}/>
           <Route path={config.routes.createAccount} element={<CreateAccount topInfoState={topInfoState}/>}/>
-          <Route path={config.routes.home} element={<Home topState={topInfoState}/>}/>
+          <Route path={config.routes.home} element={<Home topInfoState={topInfoState}/>}/>
           <Route path={config.routes.addLab} element={<AddLab topInfoState={topInfoState}/>}/>
         </Route>
       </Routes>
