@@ -7,6 +7,7 @@ import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import config from "../../config";
 import {AppInfo, AppStateProps, Elem, NavBarOption} from "../App";
 import {ListItemIcon} from "@mui/material";
+import {useCookies} from "react-cookie";
 
 export interface BaseComponentProps extends AppStateProps {
   elem: Elem,
@@ -14,11 +15,11 @@ export interface BaseComponentProps extends AppStateProps {
   options?: NavBarOption[],
 }
 
-// curried function: a function that returns a function so there's not the need to repeatedly declare the inner function
+// curried function: a function that returns a function so there's no need to repeatedly call the inner function
 const option = (name: string, handler: (n: NavigateFunction) => void, iconParam?: Elem) => {
   return (navigate: NavigateFunction) => {
     let icon = iconParam ? <ListItemIcon>{iconParam}</ListItemIcon> : undefined;
-    return ({name, handler: () => handler(navigate), icon} as NavBarOption);
+    return {name, handler: () => handler(navigate), icon} as NavBarOption;
   };
 };
 export const defaultOptions = {
@@ -26,6 +27,8 @@ export const defaultOptions = {
   addLab: option("Add Lab", navigate => navigate('/' + config.routes.addLab), <AddBusinessIcon/>),
   logOut: option("Log Out", navigate => {
     config.accessJwt = undefined;
+    const [, , removeCookie] = useCookies();
+    removeCookie('refreshToken');
     navigate('/');
   }, <LogoutIcon/>)
 };
