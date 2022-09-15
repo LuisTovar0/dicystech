@@ -5,7 +5,7 @@ import {StaticController} from "../core/infra/baseController";
 import ILabService from "./iServices/iLabService";
 import config from "../core/config";
 import IJsonLabDto from "../dto/jsonDto/iJsonLabDto";
-import {authorization, dbIsConnected} from "./index";
+import {authorization, dbIsConnected} from "./middleware";
 
 const {k, created, handleException} = StaticController;
 

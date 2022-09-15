@@ -8,7 +8,7 @@ import IUserService from "./iServices/iUserService";
 import {BaseController} from "../core/infra/baseController";
 import IJsonUserDto from "../dto/jsonDto/iJsonUserDto";
 import IUserHiddenPassword from "../dto/jsonDto/iUserHiddenPwd";
-import {dbIsConnected} from "./index";
+import {dbIsConnected} from "./middleware";
 
 const route = Router();
 

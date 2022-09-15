@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {StaticController} from "../core/infra/baseController";
 import config from "../core/config";
-import {authorization} from "./index";
+import {authorization} from "./middleware";
 
 const route = Router();
 export default (app: Router) => {
